@@ -3,6 +3,7 @@ import HomeView from '../common/views/HomeView.vue'
 import LoginView from '../users/views/LoginView.vue'
 import AddressesView from '../users/views/AddressesView.vue'
 import { useAuthStore } from '../common/stores/auth.js'
+import CartView from '../common/views/CartView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,12 @@ const router = createRouter({
       name: 'addresses',
       component: AddressesView,
       meta: { requiresAuth: true }
+    },
+    { 
+      path: '/cart', 
+      name: 'cart', 
+      component: CartView,
+      meta: { requiresAuth: true } 
     }
   ],
 })
