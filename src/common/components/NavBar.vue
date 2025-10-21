@@ -43,6 +43,13 @@
               v-show="showDropdown"
               class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
             >
+              <router-link
+                v-if="authStore.isVendor"
+                :to="{ name: 'products-management' }"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+              >
+                Gestión de productos
+              </router-link>
               <button
                 @click="handleLogout"
                 class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium"

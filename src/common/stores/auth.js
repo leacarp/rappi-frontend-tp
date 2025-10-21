@@ -7,6 +7,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!token.value)
   const currentUser = computed(() => user.value)
+  const userId = computed(() => user.value?.userId)
+  const isVendor = computed(() => user.value?.role === 'vendor')
+  const isCustomer = computed(() => user.value?.role === 'customer')
 
   function login(tokenValue, userData) {
     token.value = tokenValue
@@ -33,6 +36,9 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     isAuthenticated,
     currentUser,
+    userId,
+    isVendor,
+    isCustomer,
     login,
     logout,
     getAuthHeader

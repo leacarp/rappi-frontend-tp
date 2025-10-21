@@ -4,6 +4,7 @@ import AddressesView from '../users/views/AddressesView.vue'
 import { useAuthStore } from '../common/stores/auth.js'
 import CartView from '../common/views/CartView.vue'
 import SearchRestaurantView from '../users/views/SearchRestaurantView.vue'
+import ProductsManagementView from '../products/views/ProductsManagementView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,12 @@ const router = createRouter({
       meta: { requiresAuth: true } 
     },
     {
+      path: '/products-management',
+      name: 'products-management',
+      component: ProductsManagementView,
+      meta: { requiresAuth: true, requiresVendor: true }
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: { name: 'home' }
     }
@@ -46,8 +53,13 @@ router.beforeEach((to, from, next) => {
     next({ name: 'login' })
     return
   }
-  
+
   if (to.meta.requiresGuest && authStore.isAuthenticated) {
+    next({ name: 'home' })
+    return
+  }
+
+  if (to.meta.requiresVendor && !authStore.isVendor) {
     next({ name: 'home' })
     return
   }
