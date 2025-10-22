@@ -5,6 +5,7 @@ import { useAuthStore } from '../common/stores/auth.js'
 import CartView from '../common/views/CartView.vue'
 import SearchRestaurantView from '../users/views/SearchRestaurantView.vue'
 import ProductsManagementView from '../products/views/ProductsManagementView.vue'
+import OrdersManagementView from '../orders/views/OrdersManagementView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +38,12 @@ const router = createRouter({
       path: '/products-management',
       name: 'products-management',
       component: ProductsManagementView,
+      meta: { requiresAuth: true, requiresVendor: true }
+    },
+    {
+      path: '/orders-management',
+      name: 'orders-management',
+      component: OrdersManagementView,
       meta: { requiresAuth: true, requiresVendor: true }
     },
     {
