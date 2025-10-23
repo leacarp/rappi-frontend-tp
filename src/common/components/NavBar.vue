@@ -27,7 +27,7 @@
               @click="toggleDropdown"
               class="text-gray-700 hover:text-orange-500 font-medium transition-colors flex items-center space-x-1"
             >
-              <span>Mi perfil</span>
+              <span>Cuenta</span>
               <svg 
                 class="w-4 h-4 transition-transform" 
                 :class="{ 'rotate-180': showDropdown }"
@@ -56,6 +56,13 @@
                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
               >
                 Gestión de pedidos
+              </router-link>
+              <router-link
+                v-if="authStore.isVendor"
+                :to="{ name: 'vendor-profile' }"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+              >
+                Mi perfil
               </router-link>
               <button
                 @click="handleLogout"

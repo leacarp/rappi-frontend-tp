@@ -47,6 +47,12 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresVendor: true }
     },
     {
+      path: '/vendor-profile',
+      name: 'vendor-profile',
+      component: () => import('../users/views/VendorProfileView.vue'),
+      meta: { requiresAuth: true, requiresVendor: true }
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: { name: 'home' }
     }
