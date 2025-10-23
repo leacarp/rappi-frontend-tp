@@ -1,13 +1,11 @@
 <template>
     <div class="min-h-screen bg-gray-50">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Header -->
         <div class="mb-8">
           <h2 class="text-3xl font-bold text-gray-900 mb-2">Mi Perfil de Restaurante</h2>
           <p class="text-gray-600">Gestiona la información de tu negocio</p>
         </div>
   
-        <!-- Mensaje de éxito -->
         <div v-if="successMessage" class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center justify-between">
           <div class="flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,7 +20,6 @@
           </button>
         </div>
   
-        <!-- Mensaje de error -->
         <div v-if="error" class="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-center justify-between">
           <div class="flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,13 +40,10 @@
           <p class="mt-4 text-gray-600">Cargando información del perfil...</p>
         </div>
   
-        <!-- Formulario del perfil -->
         <div v-else class="bg-white rounded-lg shadow-sm overflow-hidden">
           <form @submit.prevent="handleSaveProfile">
             <div class="p-6">
-              <!-- Grid de 2 columnas -->
               <div class="grid md:grid-cols-2 gap-8">
-                <!-- Columna izquierda - Información editable -->
                 <div class="space-y-6">
                   <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -60,7 +54,6 @@
                     </h3>
                   </div>
   
-                  <!-- Nombre del restaurante -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Nombre del Restaurante *
@@ -74,7 +67,6 @@
                     />
                   </div>
   
-                  <!-- Horarios -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Horarios *
@@ -89,7 +81,6 @@
                     <p class="text-xs text-gray-500 mt-1">Describe tus horarios de atención</p>
                   </div>
   
-                  <!-- Teléfono -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Teléfono
@@ -104,7 +95,6 @@
                   </div>
                 </div>
   
-                <!-- Columna derecha - Información de solo lectura -->
                 <div class="space-y-6">
                   <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -115,7 +105,6 @@
                     </h3>
                   </div>
   
-                  <!-- Descripción -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Descripción
@@ -126,7 +115,6 @@
                     <p class="text-xs text-gray-500 mt-1">Campo de solo lectura</p>
                   </div>
   
-                  <!-- Email -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Email de Contacto
@@ -140,7 +128,6 @@
                     <p class="text-xs text-gray-500 mt-1">Campo de solo lectura</p>
                   </div>
   
-                  <!-- Rating -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Calificación
@@ -166,7 +153,6 @@
                     <p class="text-xs text-gray-500 mt-1">Basado en reseñas de clientes</p>
                   </div>
   
-                  <!-- Disponibilidad -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Estado de Disponibilidad
@@ -197,7 +183,6 @@
               </div>
             </div>
   
-            <!-- Footer con botones -->
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex gap-3 justify-end">
               <button
                 type="button"
@@ -236,7 +221,6 @@
   const error = ref('')
   const successMessage = ref('')
   
-  // Datos originales del perfil (solo lectura)
   const profileData = ref({
     restaurantName: '',
     description: '',
@@ -247,15 +231,12 @@
     phone: ''
   })
   
-  // Formulario editable
   const profileForm = ref({
     restaurantName: '',
     schedule: '',
     phone: ''
   })
   
-  // Cargar el perfil del vendor
-  // Cargar el perfil del vendor
 const loadProfile = async () => {
   if (!authStore.userId) {
     error.value = 'No se encontró ID de usuario'
@@ -268,7 +249,6 @@ const loadProfile = async () => {
   try {
     const response = await vendorApi.getVendorProfile(authStore.userId)
     
-    // Guardar datos completos
     profileData.value = {
       restaurantName: response.restaurantName || '',
       description: response.description || '',
@@ -279,7 +259,6 @@ const loadProfile = async () => {
       phone: response.phone || ''
     }
 
-    // Inicializar formulario editable
     profileForm.value = {
       restaurantName: response.restaurantName || '',
       schedule: response.schedule || '',
@@ -288,12 +267,9 @@ const loadProfile = async () => {
   } catch (err) {
     console.error('Error al cargar perfil:', err)
     
-    // Si el error es porque no tiene información de vendor, 
-    // permitimos que complete el formulario por primera vez
     if (err.response?.status === 500 && 
         err.response?.data?.message?.includes('no tiene información de vendor')) {
-      
-      // Inicializar con datos vacíos para que pueda completar su perfil
+        
       profileData.value = {
         restaurantName: '',
         description: 'Sin descripción',
@@ -310,7 +286,6 @@ const loadProfile = async () => {
         phone: ''
       }
 
-      // Mostrar mensaje informativo en lugar de error
       error.value = '⚠️ Aún no has completado tu perfil de restaurante. Por favor, completa la información a continuación.'
     } else {
       error.value = err.message || 'Error al cargar el perfil del vendor'
@@ -319,8 +294,7 @@ const loadProfile = async () => {
     loading.value = false
   }
 }
-  
-  // Guardar cambios del perfil
+    
   const handleSaveProfile = async () => {
     if (!authStore.userId) {
       error.value = 'No se encontró ID de usuario'
@@ -332,21 +306,18 @@ const loadProfile = async () => {
     successMessage.value = ''
   
     try {
-      // Preparar datos para enviar (solo campos editables)
       const updateData = {
         restaurantName: profileForm.value.restaurantName,
         schedule: profileForm.value.schedule,
-        phone: profileForm.value.phone || undefined // Enviar undefined si está vacío
+        phone: profileForm.value.phone || undefined
       }
   
       await vendorApi.updateVendorProfile(authStore.userId, updateData)
       
       successMessage.value = '¡Perfil actualizado exitosamente!'
       
-      // Recargar los datos para reflejar los cambios
       await loadProfile()
   
-      // Auto-ocultar mensaje de éxito después de 5 segundos
       setTimeout(() => {
         successMessage.value = ''
       }, 5000)
@@ -358,7 +329,6 @@ const loadProfile = async () => {
     }
   }
   
-  // Cancelar edición y restaurar valores originales
   const handleCancel = () => {
     profileForm.value = {
       restaurantName: profileData.value.restaurantName,
