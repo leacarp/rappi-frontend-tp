@@ -48,7 +48,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
               <div>
-                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order._id }}</h3>
+                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order._trackingNumber}}</h3>
                 <p class="text-sm text-gray-600">{{ formatDate(order._createdAt) }}</p>
               </div>
               <span :class="[
@@ -57,10 +57,6 @@
               ]">
                 {{ getStatusLabel(order._status) }}
               </span>
-            </div>
-            <div class="text-right">
-              <p class="text-xl font-bold text-gray-900">${{ order._total.toFixed(2) }}</p>
-              <p class="text-sm text-gray-500">Hacer clic para ver detalles</p>
             </div>
           </div>
         </div>
@@ -75,7 +71,7 @@
       <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b border-gray-200 flex items-center justify-between">
             <div>
-              <h2 class="text-2xl font-bold text-gray-900">Pedido #{{ selectedOrder._id }}</h2>
+              <h2 class="text-2xl font-bold text-gray-900">Pedido #{{ selectedOrder._trackingNumber }}</h2>
               <p class="text-sm text-gray-600">{{ formatDate(selectedOrder._createdAt) }}</p>
             </div>
             <div class="flex items-center gap-4">
