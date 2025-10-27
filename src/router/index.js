@@ -1,11 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '../users/views/LoginView.vue'
-import AddressesView from '../users/views/AddressesView.vue'
 import { useAuthStore } from '../common/stores/auth.js'
-import CartView from '../common/views/CartView.vue'
-import SearchRestaurantView from '../users/views/SearchRestaurantView.vue'
-import ProductsManagementView from '../products/views/ProductsManagementView.vue'
-import OrdersManagementView from '../orders/views/OrdersManagementView.vue'
+
+const SearchRestaurantView = () => import('../users/views/SearchRestaurantView.vue')
+const LoginView = () => import('../users/views/LoginView.vue')
+const AddressesView = () => import('../users/views/AddressesView.vue')
+const CartView = () => import('../common/views/CartView.vue')
+const ProductsManagementView = () => import('../products/views/ProductsManagementView.vue')
+const OrdersManagementView = () => import('../orders/views/OrdersManagementView.vue')
+const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,7 +51,7 @@ const router = createRouter({
     {
       path: '/vendor-profile',
       name: 'vendor-profile',
-      component: () => import('../users/views/VendorProfileView.vue'),
+      component: VendorProfileView,
       meta: { requiresAuth: true, requiresVendor: true }
     },
     {
