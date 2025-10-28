@@ -7,8 +7,8 @@ const AddressesView = () => import('../users/views/AddressesView.vue')
 const CartView = () => import('../common/views/CartView.vue')
 const ProductsManagementView = () => import('../products/views/ProductsManagementView.vue')
 const OrdersManagementView = () => import('../orders/views/OrdersManagementView.vue')
+const DeliveryManagementView = () => import('../orders/views/DeliveryManagementView.vue')
 const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
-const DeliveryManagementView = () => import('../driver/views/DeliveryManagementView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

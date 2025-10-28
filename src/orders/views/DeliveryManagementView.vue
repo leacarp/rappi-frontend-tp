@@ -382,7 +382,7 @@
   
 <script setup>
 import { ref, computed } from 'vue'
-import { orderApi } from '../composables/orderApiService.js'
+import { orderApiService } from '../composables/orderApiService.js'
 import { useOrderTranslations } from '../../common/composables/orderTranslations.js'
 
 const { 
@@ -512,7 +512,7 @@ const viewOrderDetails = async () => {
     error.value = null
 
     // const orderDetails = await orderApi.getOrderById(order._id)
-    const orderDetails = await orderApi.getOrderById("68f04a6f904de0f188ece5bd")
+    const orderDetails = await orderApiService.getOrderById("68f04a6f904de0f188ece5bd")
 
     selectedOrder.value = orderDetails
     showDetailsModal.value = true
@@ -551,7 +551,7 @@ const rejectOrder = (orderId) => {
 const updateOrderStatusLocal = async (orderId, newStatus) => {
   try {
     // Actualizar el estado en el backend
-    await orderApi.updateOrderStatus(orderId, newStatus)
+    await orderApiService.updateOrderStatus(orderId, newStatus)
     
     // Actualizar el estado local
     const order = inTransitOrders.value.find(o => o.id === orderId)
