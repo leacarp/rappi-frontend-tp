@@ -1,12 +1,41 @@
 <template>
     <div class="min-h-screen bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-2">Gestión de Entregas</h2>
-                <p class="text-gray-600">Administra tus entregas</p>
-            </div>
-
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Gestión de Entregas</h2>
+                    <p class="text-gray-600">Administra tus entregas</p>
+                </div>
+                
+                <div class="mb-4 p-4 bg-white rounded-lg shadow-sm flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <span
+                            class="inline-flex h-3 w-3 rounded-full"
+                            :class="isAvailable ? 'bg-green-500' : 'bg-gray-400'"
+                            aria-hidden="true"
+                        ></span>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">
+                                Estado: <span :class="isAvailable ? 'text-green-700' : 'text-gray-600'">{{ isAvailable ? 'Disponible' : 'No disponible' }}</span>
+                            </p>
+                            <p class="text-xs text-gray-500">Activa tu disponibilidad para recibir pedidos nuevos.</p>
+                        </div>
+                    </div>
+                    <button
+                        @click="toggleAvailability"
+                        :aria-pressed="isAvailable.toString()"
+                        :aria-label="isAvailable ? 'Cambiar a no disponible' : 'Cambiar a disponible'"
+                        :title="isAvailable ? 'Cambiar a no disponible' : 'Cambiar a disponible'"
+                        :class="[
+                            'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+                            isAvailable
+                                ? 'bg-green-600 text-white hover:bg-green-700'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ]"
+                    >
+                        {{ isAvailable ? 'Pasar a No disponible' : 'Pasar a Disponible' }}
+                    </button>
+                </div>
                 <div class="bg-white rounded-lg shadow-sm mb-6">
                     <div class="border-b border-gray-200">
                         <nav class="flex -mb-px">
@@ -39,7 +68,7 @@
                 </div>
         
                 <!-- Pedidos Listos para Recolección -->
-                <div v-if="activeTab === 'ready_for_pickup'" class="space-y-4">
+                <div v-if="activeTab === 'ready_for_pickup' && isAvailable" class="space-y-4">
                     <div v-if="readyForPickupOrders.length === 0" class="bg-white rounded-lg shadow-sm p-8 text-center">
                         <p class="text-gray-500">No hay pedidos listos para recolección en este momento</p>
                     </div>
@@ -84,7 +113,7 @@
                 </div>
         
                 <!-- Pedidos En Tránsito -->
-                <div v-if="activeTab === 'in_transit'" class="space-y-4">
+                <div v-if="activeTab === 'in_transit' && isAvailable" class="space-y-4">
                     <div v-if="inTransitOrders.length === 0" class="bg-white rounded-lg shadow-sm p-8 text-center">
                         <p class="text-gray-500">No tienes pedidos en tránsito</p>
                     </div>
@@ -304,6 +333,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { orderApiService } from '../composables/orderApiService.js'
+import { userApi } from '../../users/composables/userApiService.js'
 import { useOrderTranslations } from '../../common/composables/orderTranslations.js'
 import { useAuthStore } from '../../common/stores/auth.js'
 import { useRejectedOrdersStore } from '../stores/rejectedOrders.js'
@@ -318,16 +348,35 @@ const showDetailsModal = ref(false)
 const selectedOrder = ref(null)
 const loading = ref(false)
 const error = ref(null)
+const isAvailable = ref(true)
 
 const readyForPickupOrders = ref([])
 const inTransitOrders = ref([])
 const deliveredOrders = ref([])
 
-const tabs = computed(() => [
-    { id: 'ready_for_pickup', label: 'Listos para Recolección', count: readyForPickupOrders.value.length },
-    { id: 'in_transit', label: 'En Tránsito', count: inTransitOrders.value.length },
-    { id: 'delivered', label: 'Entregados', count: deliveredOrders.value.length }
-])
+const tabs = computed(() => {
+    if (isAvailable.value) {
+        return [
+            { id: 'ready_for_pickup', label: 'Listos para Recolección', count: readyForPickupOrders.value.length },
+            { id: 'in_transit', label: 'En Tránsito', count: inTransitOrders.value.length },
+            { id: 'delivered', label: 'Entregados', count: deliveredOrders.value.length }
+        ]
+    }
+
+    return [
+        { id: 'delivered', label: 'Entregados', count: deliveredOrders.value.length }
+    ]
+})
+
+const getDriverAvailability = async () => {
+    try {
+        const availability = await userApi.getDriverAvailability(authStore.userId)
+        return availability.isAvailable
+    } catch (err) {
+        console.error('Error al obtener la disponibilidad del driver:', err)
+        throw err
+    }
+}
 
 const getOrdersByStatus = async (status) => {
     try {
@@ -361,7 +410,16 @@ const getDeliveredOrders = async () => {
     return orders.sort((a, b) => new Date(b._createdAt) - new Date(a._createdAt))
 }
 
-const loadOrders = async () => {
+const loadOrderSection = async () => {
+    if (!isAvailable.value) {
+        activeTab.value = 'delivered'
+        readyForPickupOrders.value = []
+        inTransitOrders.value = []
+        deliveredOrders.value = await getDeliveredOrders()
+        return
+    }
+
+    activeTab.value = 'ready_for_pickup'
     readyForPickupOrders.value = await getReadyForPickupOrders()
     inTransitOrders.value = await getInTransitOrders()
     deliveredOrders.value = await getDeliveredOrders()
@@ -392,10 +450,31 @@ const closeDetailsModal = () => {
 const setOrderAsDelivered = async (orderId) => {
     try {
         await orderApiService.updateOrderStatus(orderId, 'delivered')
-        await loadOrders()
+        await loadOrderSection()
         alert('El pedido fue marcado como entregado exitosamente.')
     } catch (err) {
         console.error('Error al marcar como entregado el pedido:', err)
+        error.value = err.message
+    }
+}
+
+const toggleAvailability = async () => {
+    try {
+        if (isAvailable.value && inTransitOrders.value.length > 0) {
+            alert('No puedes pasar a No disponible mientras tengas pedidos en tránsito.')
+            return
+        }
+
+        isAvailable.value = !isAvailable.value
+        activeTab.value = isAvailable.value ? 'ready_for_pickup' : 'delivered'
+
+        await userApi.updateDriverAvailability(authStore.userId, isAvailable.value)
+
+        await loadOrderSection()
+
+        alert(isAvailable.value ? 'Estás disponible para recibir pedidos' : 'No estás disponible')
+    } catch (err) {
+        console.error('Error al actualizar la disponibilidad del driver:', err)
         error.value = err.message
     }
 }
@@ -413,7 +492,8 @@ const rejectOrder = (orderId) => {
 }
 
 onMounted(async () => {
-    await loadOrders()
+    isAvailable.value = await getDriverAvailability()
+    await loadOrderSection()
 })
 </script>
   
