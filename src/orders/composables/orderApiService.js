@@ -3,9 +3,13 @@ import api from '../../common/composables/apiService.js'
 const BASE_URL = '/orders'
 
 export const orderApiService = {
-  async getOrdersByUser(userId, role = 'vendor') {
+  async getOrdersByUser(userId, role = 'vendor', status = null) {
     try {
-      const response = await api.get(`${BASE_URL}/user/${userId}?role=${role}`)
+      let url = `${BASE_URL}/user/${userId}?role=${role}`
+      if (status) {
+        url += `&status=${status}`
+      }
+      const response = await api.get(url)
       return response.data
     } catch (error) {
       console.error('Error al obtener órdenes del usuario:', error)
@@ -19,6 +23,16 @@ export const orderApiService = {
       return response.data
     } catch (error) {
       console.error('Error al obtener la orden:', error)
+      throw error
+    }
+  },
+
+  async getOrdersByStatus(status) {
+    try {
+      const response = await api.get(`${BASE_URL}?status=${status}`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener las órdenes:', error)
       throw error
     }
   },

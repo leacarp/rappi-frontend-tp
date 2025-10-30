@@ -7,34 +7,33 @@
             </div>
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <!-- Tabs -->
                 <div class="bg-white rounded-lg shadow-sm mb-6">
                     <div class="border-b border-gray-200">
                         <nav class="flex -mb-px">
-                        <button
-                            v-for="tab in tabs"
-                            :key="tab.id"
-                            @click="activeTab = tab.id"
-                            :class="[
-                            'px-6 py-4 text-sm font-medium border-b-2 transition-colors',
-                            activeTab === tab.id
-                                ? 'border-blue-600 text-blue-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            ]"
-                        >
-                            {{ tab.label }}
-                            <span
-                            v-if="tab.count > 0"
-                            :class="[
-                                'ml-2 px-2 py-1 text-xs rounded-full',
-                                activeTab === tab.id
-                                ? 'bg-blue-100 text-blue-600'
-                                : 'bg-gray-100 text-gray-600'
-                            ]"
+                            <button
+                                v-for="tab in tabs"
+                                :key="tab.id"
+                                @click="activeTab = tab.id"
+                                :class="[
+                                    'px-6 py-4 text-sm font-medium border-b-2 transition-colors',
+                                    activeTab === tab.id
+                                        ? 'border-blue-600 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                ]"
                             >
-                            {{ tab.count }}
-                            </span>
-                        </button>
+                                {{ tab.label }}
+                                <span
+                                    v-if="tab.count > 0"
+                                    :class="[
+                                        'ml-2 px-2 py-1 text-xs rounded-full',
+                                        activeTab === tab.id
+                                        ? 'bg-blue-100 text-blue-600'
+                                        : 'bg-gray-100 text-gray-600'
+                                    ]"
+                                >
+                                    {{ tab.count }}
+                                </span>
+                            </button>
                         </nav>
                     </div>
                 </div>
@@ -50,61 +49,36 @@
                         class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow"
                     >
                         <div class="flex items-start justify-between mb-4">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order.id }}</h3>
-                            <p class="text-sm text-gray-500">{{ order.restaurant }}</p>
-                        </div>
-                        <span class="px-3 py-1 text-sm font-medium bg-purple-100 text-purple-800 rounded-full">
-                            Listo para Recolección
-                        </span>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order._trackingNumber }}</h3>
+                                <p class="text-sm text-gray-700 mt-1">Total: ${{ Number(order._total).toFixed(2) }}</p>
+                                <p class="text-xs text-gray-500">Creado: {{ formatDate(order._createdAt) }}</p>
+                            </div>
+                            <span class="px-3 py-1 text-sm font-medium bg-purple-100 text-purple-800 rounded-full">
+                                Listo para Recolección
+                            </span>
                         </div>
             
-                        <div class="space-y-3 mb-4">
-                        <!-- Dirección de recolección -->
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                            <span class="text-green-600 font-bold text-sm">R</span>
-                            </div>
-                            <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-900">Recolectar en:</p>
-                            <p class="text-sm text-gray-600">{{ order.pickupAddress }}</p>
-                            </div>
-                        </div>
-            
-                        <!-- Dirección de entrega -->
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                            <span class="text-blue-600 font-bold text-sm">E</span>
-                            </div>
-                            <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-900">Entregar en:</p>
-                            <p class="text-sm text-gray-600">{{ order.deliveryAddress }}</p>
-                            </div>
-                        </div>
-                        </div>
-            
-                        <!-- Botón para ver detalles -->
                         <button
-                        @click="viewOrderDetails(order)"
-                        class="w-full mb-3 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                            @click="viewOrderDetails(order._id)"
+                            class="w-full mb-3 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                         >
-                        Ver detalles del pedido
+                            Ver detalles del pedido
                         </button>
             
-                        <!-- Botones de acción -->
                         <div class="flex space-x-3">
-                        <button
-                            @click="acceptOrder(order.id)"
-                            class="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
-                        >
-                            Aceptar Pedido
-                        </button>
-                        <button
-                            @click="rejectOrder(order.id)"
-                            class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
-                        >
-                            Rechazar
-                        </button>
+                            <button
+                                @click="acceptOrder(order._id)"
+                                class="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
+                            >
+                                Aceptar Pedido
+                            </button>
+                            <button
+                                @click="rejectOrder(order._id)"
+                                class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                            >
+                                Rechazar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -120,72 +94,30 @@
                         class="bg-white rounded-lg shadow-sm p-6"
                     >
                         <div class="flex items-start justify-between mb-4">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order.id }}</h3>
-                            <p class="text-sm text-gray-500">{{ order.restaurant }}</p>
-                        </div>
-                        <span class="px-3 py-1 text-sm font-medium bg-indigo-100 text-indigo-800 rounded-full">
-                            En Tránsito
-                        </span>
-                        </div>
-            
-                        <div class="space-y-3 mb-4">
-                        <!-- Dirección de recolección -->
-                        <div class="flex items-start space-x-3">
-                            <div
-                            :class="[
-                                'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1',
-                                order.status === 'picked_up' || order.status === 'on_the_way'
-                                ? 'bg-green-600'
-                                : 'bg-green-100'
-                            ]"
-                            >
-                            <span
-                                :class="[
-                                'font-bold text-sm',
-                                order.status === 'picked_up' || order.status === 'on_the_way'
-                                    ? 'text-white'
-                                    : 'text-green-600'
-                                ]"
-                            >
-                                {{ order.status === 'picked_up' || order.status === 'on_the_way' ? '✓' : 'R' }}
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order._trackingNumber }}</h3>
+                                <p class="text-sm text-gray-700 mt-1">Total: ${{ Number(order._total).toFixed(2) }}</p>
+                                <p class="text-xs text-gray-500">Creado: {{ formatDate(order._createdAt) }}</p>
+                            </div>
+                            <span class="px-3 py-1 text-sm font-medium bg-indigo-100 text-indigo-800 rounded-full">
+                                En Tránsito
                             </span>
-                            </div>
-                            <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-900">Recolectar en:</p>
-                            <p class="text-sm text-gray-600">{{ order.pickupAddress }}</p>
-                            </div>
                         </div>
             
-                        <!-- Dirección de entrega -->
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                            <span class="text-blue-600 font-bold text-sm">E</span>
-                            </div>
-                            <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-900">Entregar en:</p>
-                            <p class="text-sm text-gray-600">{{ order.deliveryAddress }}</p>
-                            <p class="text-sm text-gray-500 mt-1">Cliente: {{ order.customerName }}</p>
-                            </div>
-                        </div>
-                        </div>
-            
-                        <!-- Botón para ver detalles -->
                         <button
-                        @click="viewOrderDetails(order)"
-                        class="w-full mb-3 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                            @click="viewOrderDetails(order._id)"
+                            class="w-full mb-3 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                         >
-                        Ver detalles del pedido
+                            Ver detalles del pedido
                         </button>
             
-                        <!-- Botones de actualización de estado -->
                         <div class="space-y-2">
-                        <button
-                            @click="updateOrderStatusLocal(order.id, 'delivered')"
-                            class="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
-                        >
-                            Marcar como Entregado
-                        </button>
+                            <button
+                                @click="setOrderAsDelivered(order._id)"
+                                class="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
+                            >
+                                Marcar como Entregado
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -201,32 +133,21 @@
                         class="bg-white rounded-lg shadow-sm p-6"
                     >
                         <div class="flex items-start justify-between mb-4">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order.id }}</h3>
-                            <p class="text-sm text-gray-500">{{ order.restaurant }}</p>
-                            <p class="text-xs text-gray-400 mt-1">Completado: {{ order.completedAt }}</p>
-                        </div>
-                        <span class="px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">
-                            Entregado
-                        </span>
-                        </div>
-            
-                        <div class="space-y-2 mb-4">
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-600">Ganancia:</span>
-                            <span class="font-semibold text-gray-900">${{ order.earnings.toFixed(2) }}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-600">Distancia:</span>
-                            <span class="text-gray-900">{{ order.distance }} km</span>
-                        </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order._trackingNumber }}</h3>
+                                <p class="text-sm text-gray-700 mt-1">Total: ${{ Number(order._total).toFixed(2) }}</p>
+                                    <p class="text-xs text-gray-500">Creado: {{ formatDate(order._createdAt) }}</p>
+                            </div>
+                            <span class="px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">
+                                Entregado
+                            </span>
                         </div>
             
                         <button
-                        @click="viewOrderDetails(order)"
-                        class="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                            @click="viewOrderDetails(order._id)"
+                            class="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                         >
-                        Ver detalles
+                            Ver detalles
                         </button>
                     </div>
                 </div>
@@ -350,15 +271,15 @@
                                         selectedOrder._payment._method === 'card' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
                                     ]"
                                 >
-                                {{ selectedOrder._payment._method === 'card' ? 'Tarjeta' : 'Efectivo' }}
+                                    {{ selectedOrder._payment._method === 'card' ? 'Tarjeta' : 'Efectivo' }}
                                 </span>
                                 <span
-                                :class="[
-                                    'px-3 py-1 text-sm font-medium rounded-full',
-                                    selectedOrder._payment._status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                                ]"
+                                    :class="[
+                                        'px-3 py-1 text-sm font-medium rounded-full',
+                                        selectedOrder._payment._status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                    ]"
                                 >
-                                {{ selectedOrder._payment._status === 'paid' ? 'Pagado' : 'Pendiente' }}
+                                    {{ selectedOrder._payment._status === 'paid' ? 'Pagado' : 'Pendiente' }}
                                 </span>
                             </div>
                             <div v-if="selectedOrder._payment._method === 'card' && selectedOrder._payment._transactionId" class="text-sm">
@@ -381,14 +302,16 @@
 </template>
   
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { orderApiService } from '../composables/orderApiService.js'
 import { useOrderTranslations } from '../../common/composables/orderTranslations.js'
+import { useAuthStore } from '../../common/stores/auth.js'
+import { useRejectedOrdersStore } from '../stores/rejectedOrders.js'
 
-const { 
-  getStatusLabel, 
-  formatDate
-} = useOrderTranslations()
+const authStore = useAuthStore()
+const rejectedStore = useRejectedOrdersStore()
+
+const { getStatusLabel, formatDate } = useOrderTranslations()
 
 const activeTab = ref('ready_for_pickup')
 const showDetailsModal = ref(false)
@@ -396,132 +319,69 @@ const selectedOrder = ref(null)
 const loading = ref(false)
 const error = ref(null)
 
+const readyForPickupOrders = ref([])
+const inTransitOrders = ref([])
+const deliveredOrders = ref([])
+
 const tabs = computed(() => [
-{ id: 'ready_for_pickup', label: 'Listos para Recolección', count: readyForPickupOrders.value.length },
-{ id: 'in_transit', label: 'En Tránsito', count: inTransitOrders.value.length },
-{ id: 'delivered', label: 'Entregados', count: deliveredOrders.value.length }
+    { id: 'ready_for_pickup', label: 'Listos para Recolección', count: readyForPickupOrders.value.length },
+    { id: 'in_transit', label: 'En Tránsito', count: inTransitOrders.value.length },
+    { id: 'delivered', label: 'Entregados', count: deliveredOrders.value.length }
 ])
 
-// Datos de ejemplo - Pedidos listos para recolección
-const readyForPickupOrders = ref([
-{
-    id: '1001',
-    restaurant: 'Pizza Napolitana',
-    pickupAddress: 'Av. Corrientes 1234, CABA',
-    deliveryAddress: 'Av. Santa Fe 5678, Palermo, CABA',
-    customerName: 'María González',
-    customerPhone: '+54 11 1234-5678',
-    status: 'ready_for_pickup',
-    items: [
-    { id: 1, name: 'Pizza Margarita', quantity: 2, price: 15.00, notes: 'Sin aceitunas' },
-    { id: 2, name: 'Coca Cola 1.5L', quantity: 1, price: 3.50 }
-    ],
-    total: 33.50,
-    paymentMethod: 'card',
-    paymentStatus: 'paid',
-    deliveryNotes: 'Tocar timbre del 4to piso'
-},
-{
-    id: '1002',
-    restaurant: 'Burger House',
-    pickupAddress: 'Av. Cabildo 2345, Belgrano, CABA',
-    deliveryAddress: 'Av. del Libertador 3456, Núñez, CABA',
-    customerName: 'Carlos Rodríguez',
-    customerPhone: '+54 11 2345-6789',
-    status: 'ready_for_pickup',
-    items: [
-    { id: 1, name: 'Hamburguesa Completa', quantity: 1, price: 12.00 },
-    { id: 2, name: 'Papas Fritas', quantity: 1, price: 4.50 }
-    ],
-    total: 16.50,
-    paymentMethod: 'cash',
-    paymentStatus: 'pending',
-    deliveryNotes: null
+const getOrdersByStatus = async (status) => {
+    try {
+        const orders = await orderApiService.getOrdersByStatus(status)
+        return orders._orders
+    } catch (err) {
+        console.error('Error al obtener las órdenes:', err)
+        throw err
+    }
 }
-])
 
-// Datos de ejemplo - Pedidos en tránsito
-const inTransitOrders = ref([
-{
-    id: '1000',
-    restaurant: 'Sushi Express',
-    pickupAddress: 'Av. Las Heras 890, Recoleta, CABA',
-    deliveryAddress: 'Av. Callao 1234, Recoleta, CABA',
-    customerName: 'Ana Martínez',
-    customerPhone: '+54 11 3456-7890',
-    status: 'in_transit',
-    items: [
-    { id: 1, name: 'Combo Sushi 20 piezas', quantity: 1, price: 25.00 },
-    { id: 2, name: 'Sopa Miso', quantity: 2, price: 5.00 }
-    ],
-    total: 35.00,
-    paymentMethod: 'card',
-    paymentStatus: 'paid',
-    deliveryNotes: 'Departamento 5B'
+const getOrdersByStatusToCurrentUser = async (status) => {
+    const userId = authStore.userId
+    const orders = await orderApiService.getOrdersByUser(userId, 'driver', status)
+    return orders._orders
 }
-])
 
-// Datos de ejemplo - Pedidos entregados
-const deliveredOrders = ref([
-{
-    id: '999',
-    restaurant: 'Parrilla Don José',
-    pickupAddress: 'Av. Rivadavia 4567, Caballito, CABA',
-    deliveryAddress: 'Av. Díaz Vélez 2345, Almagro, CABA',
-    customerName: 'Pedro López',
-    customerPhone: '+54 11 4567-8901',
-    status: 'delivered',
-    completedAt: '2024-01-15 14:30',
-    earnings: 8.50,
-    distance: 3.2,
-    items: [
-    { id: 1, name: 'Bife de Chorizo', quantity: 1, price: 18.00 },
-    { id: 2, name: 'Ensalada Mixta', quantity: 1, price: 6.00 }
-    ],
-    total: 24.00,
-    paymentMethod: 'card',
-    paymentStatus: 'paid',
-    deliveryNotes: null
-},
-{
-    id: '998',
-    restaurant: 'Café Tortoni',
-    pickupAddress: 'Av. de Mayo 825, Monserrat, CABA',
-    deliveryAddress: 'Florida 753, Microcentro, CABA',
-    customerName: 'Laura Fernández',
-    customerPhone: '+54 11 5678-9012',
-    status: 'delivered',
-    completedAt: '2024-01-15 12:15',
-    earnings: 6.00,
-    distance: 1.5,
-    items: [
-    { id: 1, name: 'Café con Leche', quantity: 2, price: 4.00 },
-    { id: 2, name: 'Medialunas', quantity: 6, price: 8.00 }
-    ],
-    total: 16.00,
-    paymentMethod: 'cash',
-    paymentStatus: 'paid',
-    deliveryNotes: null
+const getReadyForPickupOrders = async () => {
+    const orders = await getOrdersByStatus('ready_for_pickup')
+    const sorted = orders.sort((a, b) => new Date(a._createdAt) - new Date(b._createdAt))
+    return rejectedStore.removeRejecteds(sorted)
 }
-])
 
+const getInTransitOrders = async () => {
+    const orders = await getOrdersByStatusToCurrentUser('in_transit')
+    return orders.sort((a, b) => new Date(a._createdAt) - new Date(b._createdAt))
+}
 
-const viewOrderDetails = async () => {
-  try {
-    loading.value = true
-    error.value = null
+const getDeliveredOrders = async () => {
+    const orders = await getOrdersByStatusToCurrentUser('delivered')
+    return orders.sort((a, b) => new Date(b._createdAt) - new Date(a._createdAt))
+}
 
-    // const orderDetails = await orderApi.getOrderById(order._id)
-    const orderDetails = await orderApiService.getOrderById("68f04a6f904de0f188ece5bd")
+const loadOrders = async () => {
+    readyForPickupOrders.value = await getReadyForPickupOrders()
+    inTransitOrders.value = await getInTransitOrders()
+    deliveredOrders.value = await getDeliveredOrders()
+}
 
-    selectedOrder.value = orderDetails
-    showDetailsModal.value = true
-  } catch (err) {
-    console.error('Error al obtener detalles del pedido:', err)
-    error.value = err.message
-  } finally {
-    loading.value = false
-  }
+const viewOrderDetails = async (orderId) => {
+    try {
+        loading.value = true
+        error.value = null
+
+        const orderDetails = await orderApiService.getOrderById(orderId)
+
+        selectedOrder.value = orderDetails
+        showDetailsModal.value = true
+    } catch (err) {
+        console.error('Error al obtener detalles del pedido:', err)
+        error.value = err.message
+    } finally {
+        loading.value = false
+    }
 }
 
 const closeDetailsModal = () => {
@@ -529,56 +389,31 @@ const closeDetailsModal = () => {
     selectedOrder.value = null
 }
 
-const acceptOrder = (orderId) => {
-    const orderIndex = readyForPickupOrders.value.findIndex(o => o.id === orderId)
-    if (orderIndex !== -1) {
-        const order = readyForPickupOrders.value[orderIndex]
-        order.status = 'in_transit'
-        inTransitOrders.value.push(order)
-        readyForPickupOrders.value.splice(orderIndex, 1)
-        alert(`Pedido #${orderId} aceptado exitosamente`)
+const setOrderAsDelivered = async (orderId) => {
+    try {
+        await orderApiService.updateOrderStatus(orderId, 'delivered')
+        await loadOrders()
+        alert('El pedido fue marcado como entregado exitosamente.')
+    } catch (err) {
+        console.error('Error al marcar como entregado el pedido:', err)
+        error.value = err.message
     }
+}
+
+const acceptOrder = async (orderId) => {
+    // TODO: Pendiente el backend
+    console.log('acceptOrder clicked for', orderId)
 }
 
 const rejectOrder = (orderId) => {
-    const orderIndex = readyForPickupOrders.value.findIndex(o => o.id === orderId)
-    if (orderIndex !== -1) {
-        readyForPickupOrders.value.splice(orderIndex, 1)
-        alert(`Pedido #${orderId} rechazado`)
-    }
+    if (!orderId) return
+    rejectedStore.add(orderId)
+    
+    readyForPickupOrders.value = readyForPickupOrders.value.filter(o => o._id !== orderId)
 }
 
-const updateOrderStatusLocal = async (orderId, newStatus) => {
-  try {
-    // Actualizar el estado en el backend
-    await orderApiService.updateOrderStatus(orderId, newStatus)
-    
-    // Actualizar el estado local
-    const order = inTransitOrders.value.find(o => o.id === orderId)
-    if (order) {
-      order.status = newStatus
-      
-      if (newStatus === 'delivered') {
-        // Mover a entregados
-        const orderIndex = inTransitOrders.value.findIndex(o => o.id === orderId)
-        if (orderIndex !== -1) {
-          const deliveredOrder = { 
-            ...order, 
-            completedAt: new Date().toLocaleString('es-AR'),
-            earnings: 7.50,
-            distance: 2.5
-          }
-          deliveredOrders.value.unshift(deliveredOrder)
-          inTransitOrders.value.splice(orderIndex, 1)
-        }
-      }
-      
-      alert(`Pedido #${orderId} actualizado a: ${getStatusLabel(newStatus)}`)
-    }
-  } catch (err) {
-    console.error('Error al actualizar el estado del pedido:', err)
-    alert('Error al actualizar el estado del pedido. Por favor, inténtalo de nuevo.')
-  }
-}
+onMounted(async () => {
+    await loadOrders()
+})
 </script>
   
