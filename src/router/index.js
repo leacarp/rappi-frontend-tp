@@ -7,6 +7,7 @@ const AddressesView = () => import('../users/views/AddressesView.vue')
 const CartView = () => import('../common/views/CartView.vue')
 const ProductsManagementView = () => import('../products/views/ProductsManagementView.vue')
 const OrdersManagementView = () => import('../orders/views/OrdersManagementView.vue')
+const DeliveryManagementView = () => import('../orders/views/DeliveryManagementView.vue')
 const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
 
 const router = createRouter({
@@ -55,6 +56,12 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresVendor: true }
     },
     {
+      path: '/delivery-management',
+      name: 'delivery-management',
+      component: DeliveryManagementView,
+      meta: { requiresAuth: true, requiresDriver: true }
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: { name: 'home' }
     }
@@ -75,6 +82,11 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.meta.requiresVendor && !authStore.isVendor) {
+    next({ name: 'home' })
+    return
+  }
+
+  if (to.meta.requiresDriver && !authStore.isDriver) {
     next({ name: 'home' })
     return
   }

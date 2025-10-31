@@ -238,8 +238,19 @@
 import { ref, computed, onMounted } from 'vue'
 import { orderApiService } from '../composables/orderApiService.js'
 import { useAuthStore } from '../../common/stores/auth.js'
+import { useOrderTranslations } from '../../common/composables/orderTranslations.js'
 
 const authStore = useAuthStore()
+const { 
+  orderStatuses, 
+  getStatusLabel, 
+  getStatusColor, 
+  getPaymentMethodLabel, 
+  getPaymentStatusLabel, 
+  getPaymentStatusColor, 
+  formatDate 
+} = useOrderTranslations()
+
 const filterStatus = ref('all')
 const orders = ref([])
 const loading = ref(false)
@@ -247,24 +258,12 @@ const error = ref(null)
 const selectedOrder = ref(null)
 const modalLoading = ref(false)
 
-const orderStatuses = [
-  { value: 'all', label: 'Todos' },
-  { value: 'pending', label: 'Pendientes' },
-  { value: 'accepted', label: 'Aceptados' },
-  { value: 'preparing', label: 'En Preparación' },
-  { value: 'ready_for_pickup', label: 'Listos para Recolección' },
-  { value: 'in_transit', label: 'En Tránsito' },
-  { value: 'delivered', label: 'Entregados' },
-  { value: 'canceled', label: 'Cancelados' }
-]
-
 const loadOrders = async () => {
   loading.value = true
   error.value = null
   
   try {
-    const role = authStore.isVendor ? 'vendor' : authStore.isCustomer ? 'customer' : 'driver'
-    const response = await orderApiService.getOrdersByUser(authStore.userId, role)
+    const response = await orderApiService.getOrdersByUser(authStore.userId, authStore.userRole)
     orders.value = (response._orders || []).slice().sort((a, b) => new Date(b._createdAt) - new Date(a._createdAt))
   } catch (err) {
     error.value = 'Error al cargar las órdenes'
@@ -309,84 +308,6 @@ const getOrderCountByStatus = (status) => {
   return orders.value.filter(order => order._status === status).length
 }
 
-const getStatusLabel = (status) => {
-  const statusObj = orderStatuses.find(s => s.value === status)
-  return statusObj ? statusObj.label : status
-}
-
-const getStatusColor = (status) => {
-  const colors = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    accepted: 'bg-green-100 text-green-800',
-    preparing: 'bg-blue-100 text-blue-800',
-    ready_for_pickup: 'bg-purple-100 text-purple-800',
-    in_transit: 'bg-indigo-100 text-indigo-800',
-    delivered: 'bg-gray-100 text-gray-800',
-    canceled: 'bg-red-100 text-red-800'
-  }
-  return colors[status] || 'bg-gray-100 text-gray-800'
-}
-
-const getPaymentMethodLabel = (method) => {
-  const methods = {
-    'cash': 'Efectivo',
-    'credit_card': 'Tarjeta de Crédito',
-    'debit_card': 'Tarjeta de Débito',
-    'bank_transfer': 'Transferencia Bancaria',
-    'digital_wallet': 'Billetera Digital',
-    'paypal': 'PayPal',
-    'stripe': 'Stripe',
-    'mercadopago': 'MercadoPago',
-    'other': 'Otro'
-  }
-  return methods[method] || method || 'No especificado'
-}
-
-const getPaymentStatusLabel = (status) => {
-  const statuses = {
-    'PENDING': 'Pendiente',
-    'PROCESSING': 'Procesando',
-    'COMPLETED': 'Completado',
-    'FAILED': 'Fallido',
-    'CANCELLED': 'Cancelado',
-    'REFUNDED': 'Reembolsado',
-    'PARTIALLY_REFUNDED': 'Parcialmente Reembolsado',
-    'AUTHORIZED': 'Autorizado',
-    'PAID': 'Pagado',
-    'VOIDED': 'Anulado'
-  }
-  return statuses[status.toUpperCase()] || status || 'Desconocido'
-}
-
-const getPaymentStatusColor = (status) => {
-  const colors = {
-    'PENDING': 'bg-yellow-100 text-yellow-800',
-    'PROCESSING': 'bg-blue-100 text-blue-800',
-    'COMPLETED': 'bg-green-100 text-green-800',
-    'FAILED': 'bg-red-100 text-red-800',
-    'CANCELLED': 'bg-gray-100 text-gray-800',
-    'REFUNDED': 'bg-purple-100 text-purple-800',
-    'PARTIALLY_REFUNDED': 'bg-orange-100 text-orange-800',
-    'AUTHORIZED': 'bg-indigo-100 text-indigo-800',
-    'PAID': 'bg-green-100 text-green-800',
-    'VOIDED': 'bg-gray-100 text-gray-800'
-  }
-  return colors[status.toUpperCase()] || 'bg-gray-100 text-gray-800'
-}
-
-const formatDate = (date) => {
-  if (!date) return ''
-
-  const d = new Date(date)
-  const pad = num => String(num).padStart(2, '0')
-  const day = pad(d.getDate())
-  const month = pad(d.getMonth() + 1)
-  const year = d.getFullYear()
-  const hours = pad(d.getHours())
-  const minutes = pad(d.getMinutes())
-
-  return `${day}/${month}/${year} ${hours}:${minutes}`
-}
 
 const updateOrderStatus = async (orderId, newStatus) => {
   if (!authStore.isAuthenticated) {
