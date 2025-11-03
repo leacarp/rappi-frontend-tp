@@ -9,6 +9,7 @@ const ProductsManagementView = () => import('../products/views/ProductsManagemen
 const OrdersManagementView = () => import('../orders/views/OrdersManagementView.vue')
 const DeliveryManagementView = () => import('../orders/views/DeliveryManagementView.vue')
 const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
+const OrderTrackingView = () => import('../orders/views/OrderTrackingView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,6 +61,12 @@ const router = createRouter({
       name: 'delivery-management',
       component: DeliveryManagementView,
       meta: { requiresAuth: true, requiresDriver: true }
+    },
+    {
+      path: '/order-tracking/:orderId',
+      name: 'order-tracking',
+      component: OrderTrackingView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/:pathMatch(.*)*',
