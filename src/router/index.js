@@ -4,7 +4,7 @@ import { useAuthStore } from '../common/stores/auth.js'
 const SearchRestaurantView = () => import('../users/views/SearchRestaurantView.vue')
 const LoginView = () => import('../users/views/LoginView.vue')
 const AddressesView = () => import('../users/views/AddressesView.vue')
-const CartView = () => import('../common/views/CartView.vue')
+const CartView = () => import('../orders/views/CartView.vue')
 const ProductsManagementView = () => import('../products/views/ProductsManagementView.vue')
 const OrdersManagementView = () => import('../orders/views/OrdersManagementView.vue')
 const DeliveryManagementView = () => import('../orders/views/DeliveryManagementView.vue')
@@ -32,11 +32,11 @@ const router = createRouter({
       component: AddressesView,
       meta: { requiresAuth: true }
     },
-    { 
-      path: '/cart', 
-      name: 'cart', 
+    {
+      path: '/cart',
+      name: 'cart',
       component: CartView,
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true }
     },
     {
       path: '/products-management',

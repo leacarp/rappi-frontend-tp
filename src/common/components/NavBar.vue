@@ -13,12 +13,16 @@
           >
             Buscar Restaurantes
           </router-link>
-          <router-link
-            :to="{ name: 'cart' }"
-            class="text-gray-700 hover:text-orange-500 font-medium transition-colors"
+          <button
+            @click="cartStore.openModal"
+            class="text-gray-700 hover:text-orange-500 font-medium transition-colors flex items-center space-x-1"
           >
-            Mi Carrito
-          </router-link>
+            <span>Mi Carrito</span>
+            <span v-if="cartStore.totalItems > 0" 
+              class="bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              {{ cartStore.totalItems }}
+            </span>
+          </button>
         </div>
 
         <div class="flex items-center space-x-4">
@@ -100,14 +104,13 @@
 
       <div v-show="showMobileMenu" class="md:hidden border-t border-gray-200 py-2">
         <div class="flex flex-col space-y-2">
-          <router-link 
-            :to="{ name: 'cart' }"
-            @click="showMobileMenu = false"
-            class="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-500"
+          <button 
+            @click="cartStore.openModal(); showMobileMenu = false"
+            class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-500"
           >
             Mi Carrito
             <span v-if="cartStore.totalItems > 0" class="text-orange-500">({{ cartStore.totalItems }})</span>
-          </router-link>
+          </button>
         </div>
       </div>
     </div>
@@ -118,7 +121,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
-import { useCartStore } from '../stores/cart.js'
+import { useCartStore } from '../../orders/stores/cart.js'
 
 const router = useRouter()
 const authStore = useAuthStore()
