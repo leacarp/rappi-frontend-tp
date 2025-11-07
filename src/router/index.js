@@ -10,6 +10,7 @@ const OrdersManagementView = () => import('../orders/views/OrdersManagementView.
 const DeliveryManagementView = () => import('../orders/views/DeliveryManagementView.vue')
 const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
 const OrderTrackingView = () => import('../orders/views/OrderTrackingView.vue')
+const RestaurantMenuView = () => import('../users/views/RestaurantMenuView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -66,6 +67,12 @@ const router = createRouter({
       path: '/order-tracking/:orderId',
       name: 'order-tracking',
       component: OrderTrackingView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/restaurant/:vendorId/menu',
+      name: 'restaurant-menu',
+      component: RestaurantMenuView,
       meta: { requiresAuth: true }
     },
     {

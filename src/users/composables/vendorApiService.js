@@ -33,4 +33,14 @@ export const vendorApi = {
       throw new Error(errorMessage)
     }
   }, 
+  async getMenu(vendorId){
+    try {
+      const response = await api.get(`/products/vendor/${vendorId}/menu`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener el menú:', error.response?.data)
+      const errorMessage = error.response?.data?.message || 'Error al obtener el menú'
+      throw new Error(errorMessage)
+    }   
+  }
 }
