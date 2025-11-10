@@ -10,6 +10,7 @@ const OrdersManagementView = () => import('../orders/views/OrdersManagementView.
 const DeliveryManagementView = () => import('../orders/views/DeliveryManagementView.vue')
 const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
 const OrderTrackingView = () => import('../orders/views/OrderTrackingView.vue')
+const AdminCreateVendorView = () => import('../users/views/AdminCreateVendor.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,6 +70,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/users/create-vendor',
+      name: 'admin-create-vendor',
+      component: AdminCreateVendorView,
+      meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: { name: 'home' }
     }
@@ -95,6 +102,11 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresDriver && !authStore.isDriver) {
     next({ name: 'home' })
+    return
+  }
+  
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    next({ name: 'home' });
     return
   }
   
