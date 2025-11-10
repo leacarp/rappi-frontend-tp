@@ -48,6 +48,14 @@
               class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
             >
               <router-link
+                v-if="authStore.isAdmin"
+                :to="{ name: 'admin-create-vendor' }"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+              >
+                Crear Vendor
+              </router-link>
+
+              <router-link
                 v-if="authStore.isVendor"
                 :to="{ name: 'products-management' }"
                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
