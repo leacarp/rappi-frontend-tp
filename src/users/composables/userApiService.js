@@ -32,5 +32,16 @@ export const userApi = {
       console.error('Error al actualizar la disponibilidad del driver:', error)
       throw error
     }
+  },
+
+  async getReviews(userId) {
+    try {
+      const response = await api.get(`${BASE_URL}/vendors/${userId}/reviews`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener reviews:', error.response?.data)
+      const errorMessage = error.response?.data?.message || 'Error al obtener reviews'
+      throw new Error(errorMessage)
+    }
   }
 }
