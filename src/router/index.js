@@ -11,6 +11,7 @@ const DeliveryManagementView = () => import('../orders/views/DeliveryManagementV
 const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
 const OrderTrackingView = () => import('../orders/views/OrderTrackingView.vue')
 const AdminCreateVendorView = () => import('../users/views/AdminCreateVendor.vue')
+const DriverReviewsView = () => import('../users/views/DriverReviewsView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +75,12 @@ const router = createRouter({
       name: 'admin-create-vendor',
       component: AdminCreateVendorView,
       meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/driver-reviews',
+      name: 'driver-reviews',
+      component: DriverReviewsView,
+      meta: { requiresAuth: true, requiresDriver: true }
     },
     {
       path: '/:pathMatch(.*)*',
