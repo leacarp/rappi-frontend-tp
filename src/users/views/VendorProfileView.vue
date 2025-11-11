@@ -213,7 +213,7 @@
   <script setup>
   import { ref, onMounted } from 'vue'
   import { useAuthStore } from '../../common/stores/auth.js'
-  import { vendorApi } from '../composables/vendorApiService.js'
+  import { userApi } from '../composables/userApiService.js'
   
   const authStore = useAuthStore()
   const loading = ref(false)
@@ -247,7 +247,7 @@ const loadProfile = async () => {
   error.value = ''
 
   try {
-    const response = await vendorApi.getVendorProfile(authStore.userId)
+    const response = await userApi.getVendorProfile(authStore.userId)
     
     profileData.value = {
       restaurantName: response.restaurantName || '',
@@ -312,7 +312,7 @@ const loadProfile = async () => {
         phone: profileForm.value.phone || undefined
       }
   
-      await vendorApi.updateVendorProfile(authStore.userId, updateData)
+      await userApi.updateVendorProfile(authStore.userId, updateData)
       
       successMessage.value = '¡Perfil actualizado exitosamente!'
       
