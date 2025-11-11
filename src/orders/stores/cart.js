@@ -5,7 +5,7 @@ const CART_KEY = 'cartItems'
 const VENDOR_ID_KEY = 'cartVendorId'
 
 const defaultItems = [
-  { id: "68dd42572da14ecf286ba5e6", name: 'Hamburguesa Clásica', price: 15.99, quantity: 2 },
+  { id: "68ed6e19e604565c65964cc3", name: 'Hamburguesa Clásica', price: 15.99, quantity: 2 },
   { id: "68dd42682da14ecf286ba5eb", name: 'Gaseosa', price: 4.50, quantity: 4 }
 ]
 const defaultVendorId = "68c02572855e7473400f9483"

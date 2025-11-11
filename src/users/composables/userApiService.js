@@ -14,6 +14,39 @@ export const userApi = {
     }
   },
 
+  async createAddress(userId, addressData) {
+    try {
+      const response = await api.post(`${BASE_URL}/${userId}/addresses`, addressData)
+      return response.data
+    } catch (error) {
+      console.error('Error al crear dirección:', error.response?.data)
+      const errorMessage = error.response?.data?.message || 'Error al crear dirección'
+      throw new Error(errorMessage)
+    }
+  },
+
+  async updateAddress(userId, addressId, addressData) {
+    try {
+      const response = await api.put(`${BASE_URL}/${userId}/addresses/${addressId}`, addressData)
+      return response.data
+    } catch (error) {
+      console.error('Error al actualizar dirección:', error.response?.data)
+      const errorMessage = error.response?.data?.message || 'Error al actualizar dirección'
+      throw new Error(errorMessage)
+    }
+  },
+
+  async deleteAddress(userId, addressId) {
+    try {
+      const response = await api.delete(`${BASE_URL}/${userId}/addresses/${addressId}`)
+      return response.data
+    } catch (error) {
+      console.error('Error al eliminar dirección:', error.response?.data)
+      const errorMessage = error.response?.data?.message || 'Error al eliminar dirección'
+      throw new Error(errorMessage)
+    }
+  },
+
   async getDriverAvailability(userId) {
     try {
       const response = await api.get(`${BASE_URL}/${userId}/driver/availability`)
@@ -41,6 +74,39 @@ export const userApi = {
     } catch (error) {
       console.error('Error al obtener reviews:', error.response?.data)
       const errorMessage = error.response?.data?.message || 'Error al obtener reviews'
+      throw new Error(errorMessage)
+    }
+  },
+
+  async searchRestaurants(param) {
+    try {
+      const response = await api.get(`${BASE_URL}/vendors/searchRestaurants?param=${param}`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener restaurantes:', error.response?.data)
+      const errorMessage = error.response?.data?.message || 'Error al obtener restaurantes'
+      throw new Error(errorMessage)
+    }
+  },
+
+  async getVendorProfile(vendorId){
+    try {
+      const response = await api.get(`${BASE_URL}/vendors/${vendorId}/profile`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener perfil del vendor:', error.response?.data)
+      const errorMessage = error.response?.data?.message || 'Error al obtener perfil del vendor'
+      throw new Error(errorMessage)
+    }   
+  },
+
+  async updateVendorProfile(vendorId, profileData){
+    try {
+      const response = await api.put(`${BASE_URL}/vendors/${vendorId}/profile`, profileData)
+      return response.data
+    } catch (error) {
+      console.error('Error al actualizar perfil del vendor:', error.response?.data)
+      const errorMessage = error.response?.data?.message || 'Error al actualizar perfil del vendor'
       throw new Error(errorMessage)
     }
   }

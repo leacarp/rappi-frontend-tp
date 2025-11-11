@@ -67,5 +67,17 @@ export const orderApiService = {
       console.error('Error al crear la orden:', error)
       throw error
     }
+  },
+
+  async acceptOrderByDriver(orderId, driverId) {
+    try {
+      const response = await api.put(`${BASE_URL}/${orderId}/accept-driver`, {
+        driverId: driverId
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error al aceptar la orden:', error)
+      throw error
+    }
   }
 }

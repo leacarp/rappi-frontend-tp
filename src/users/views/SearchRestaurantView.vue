@@ -95,7 +95,7 @@
   
   <script setup>
   import { ref } from 'vue'
-  import { vendorApi } from '../composables/vendorApiService.js'
+  import { userApi } from '../composables/userApiService.js'
   
   const searchQuery = ref('')
   const isSearching = ref(false)
@@ -160,7 +160,7 @@
     lastSearchQuery.value = searchQuery.value.trim()
     
     try {
-      const response = await vendorApi.searchRestaurants(lastSearchQuery.value)
+      const response = await userApi.searchRestaurants(lastSearchQuery.value)
       
       searchResults.value = response.restaurants
       totalResults.value = response.total
