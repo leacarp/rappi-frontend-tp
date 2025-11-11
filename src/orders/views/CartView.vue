@@ -56,6 +56,45 @@
           <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
             <h2 class="text-xl font-bold mb-6">Resumen del pedido</h2>
 
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Dirección de entrega
+              </label>
+              
+              <div v-if="loadingAddresses" class="text-sm text-gray-500 mb-2">
+                Cargando direcciones...
+              </div>
+              
+              <div v-else-if="addressesError" class="text-sm text-red-600 mb-2">
+                {{ addressesError }}
+              </div>
+              
+              <div v-else-if="addresses.length === 0" class="text-sm text-gray-500 mb-2">
+                No tienes direcciones guardadas. 
+                <router-link 
+                  :to="{ name: 'addresses' }" 
+                  class="text-orange-500 hover:text-orange-600 underline"
+                >
+                  Agregar dirección
+                </router-link>
+              </div>
+              
+              <select
+                v-else
+                v-model="selectedAddressId"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              >
+                <option :value="null" disabled>Selecciona una dirección</option>
+                <option 
+                  v-for="address in addresses" 
+                  :key="address.id" 
+                  :value="address.id"
+                >
+                  {{ address.street }}, {{ address.city }}, {{ address.zipCode }}
+                </option>
+              </select>
+            </div>
+
             <div class="space-y-4 mb-6">
               <div class="flex justify-between text-gray-600">
                 <span>Subtotal</span>
@@ -74,7 +113,8 @@
             <div class="space-y-3">
               <button
                 @click="handleCreateOrder"
-                class="w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium text-lg"
+                :disabled="!selectedAddressId || addresses.length === 0"
+                class="w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium text-lg disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 Confirmar y pagar
               </button>
@@ -93,15 +133,50 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useCartStore } from '../stores/cart.js'
 import { orderApiService } from '../composables/orderApiService.js'
 import { useAuthStore } from '../../common/stores/auth.js'
+import { userApi } from '../../users/composables/userApiService.js'
 
 const cartStore = useCartStore()
 const authStore = useAuthStore()
 
+const addresses = ref([])
+const selectedAddressId = ref(null)
+const loadingAddresses = ref(false)
+const addressesError = ref('')
+
+const fetchAddresses = async () => {
+  if (!authStore.userId) {
+    addressesError.value = 'No se encontró ID de usuario'
+    return
+  }
+  
+  loadingAddresses.value = true
+  addressesError.value = ''
+  
+  try {
+    const response = await userApi.getAddresses(authStore.userId)
+    addresses.value = response.addresses || response || []
+    
+    if (addresses.value.length > 0 && !selectedAddressId.value) {
+      selectedAddressId.value = addresses.value.find(addr => addr.isFavorite).id
+    }
+  } catch (err) {
+    console.error('Error al obtener direcciones:', err)
+    addressesError.value = err.message || 'Error al obtener direcciones'
+  } finally {
+    loadingAddresses.value = false
+  }
+}
+
 const handleCreateOrder = async () => {
-  // TODO: Implementar la lógica para seleccionar la dirección de entrega y el método de pago
+  if (!selectedAddressId.value) {
+    alert('Por favor, selecciona una dirección de entrega')
+    return
+  }
+  // TODO: Implementar la lógica para seleccionar el método de pago
   // TODO: Implementar la lógica para seleccionar una nota para la orden
 
   const items = cartStore.items.map(item => ({
@@ -119,7 +194,7 @@ const handleCreateOrder = async () => {
   const taxes = 0
   const discount = 0
   const total = parseFloat((subtotal + shippingCost + taxes - discount).toFixed(2))
-
+  
   const orderData = {
     customerId: authStore.userId,
     vendorId: cartStore.vendorId,
@@ -162,4 +237,8 @@ const handleCreateOrder = async () => {
     alert('Error al crear la orden. Por favor, intenta nuevamente.')
   }
 }
+
+onMounted(() => {
+  fetchAddresses()
+})
 </script>
