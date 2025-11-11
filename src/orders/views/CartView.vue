@@ -114,6 +114,19 @@
               </select>
             </div>
 
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Nota para el pedido <span class="text-gray-500 text-xs font-normal">(opcional)</span>
+              </label>
+              
+              <textarea
+                v-model="orderNotes"
+                placeholder="Ej: Entregar en el portón principal, timbre dos veces..."
+                rows="3"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
+              ></textarea>
+            </div>
+
             <div class="space-y-4 mb-6">
               <div class="flex justify-between text-gray-600">
                 <span>Subtotal</span>
@@ -172,6 +185,7 @@ const paymentMethods = {
   other: 'Otro'
 }
 const selectedPaymentMethod = ref('cash')
+const orderNotes = ref('')
 
 const canContinue = computed(() => {
   return !!selectedAddressId.value && addresses.value.length > 0 && !!selectedPaymentMethod.value
@@ -212,8 +226,6 @@ const handleCreateOrder = async () => {
     alert('Por favor, selecciona un método de pago')
     return
   }
-  
-  // TODO: Implementar la lógica para seleccionar una nota para la orden
 
   const items = cartStore.items.map(item => ({
     product: {
@@ -252,8 +264,7 @@ const handleCreateOrder = async () => {
       transactionId: `txn-${Date.now()}`
     },
     trackingNumber: `TRACK-2024-${Date.now().toString().slice(-6)}`,
-    // TODO: Implementar la lógica para seleccionar una nota para la orden
-    notes: 'Entregar en el portón principal'
+    notes: orderNotes.value.trim() || 'Sin notas adicionales'
   }
 
   try {
