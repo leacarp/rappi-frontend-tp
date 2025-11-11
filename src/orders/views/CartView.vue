@@ -95,6 +95,25 @@
               </select>
             </div>
 
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Método de pago
+              </label>
+              
+              <select
+                v-model="selectedPaymentMethod"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              >
+                <option 
+                  v-for="(label, value) in paymentMethods" 
+                  :key="value" 
+                  :value="value"
+                >
+                  {{ label }}
+                </option>
+              </select>
+            </div>
+
             <div class="space-y-4 mb-6">
               <div class="flex justify-between text-gray-600">
                 <span>Subtotal</span>
@@ -113,7 +132,7 @@
             <div class="space-y-3">
               <button
                 @click="handleCreateOrder"
-                :disabled="!selectedAddressId || addresses.length === 0"
+                :disabled="!canContinue"
                 class="w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium text-lg disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 Confirmar y pagar
@@ -133,7 +152,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCartStore } from '../stores/cart.js'
 import { orderApiService } from '../composables/orderApiService.js'
 import { useAuthStore } from '../../common/stores/auth.js'
@@ -146,6 +165,17 @@ const addresses = ref([])
 const selectedAddressId = ref(null)
 const loadingAddresses = ref(false)
 const addressesError = ref('')
+
+const paymentMethods = {
+  card: 'Tarjeta débito/crédito',
+  cash: 'Efectivo',
+  other: 'Otro'
+}
+const selectedPaymentMethod = ref('cash')
+
+const canContinue = computed(() => {
+  return !!selectedAddressId.value && addresses.value.length > 0 && !!selectedPaymentMethod.value
+})
 
 const fetchAddresses = async () => {
   if (!authStore.userId) {
@@ -161,7 +191,8 @@ const fetchAddresses = async () => {
     addresses.value = response.addresses || response || []
     
     if (addresses.value.length > 0 && !selectedAddressId.value) {
-      selectedAddressId.value = addresses.value.find(addr => addr.isFavorite).id
+      const favoriteAddress = addresses.value.find(addr => addr.isFavorite)
+      selectedAddressId.value = favoriteAddress?.id || addresses.value[0].id
     }
   } catch (err) {
     console.error('Error al obtener direcciones:', err)
@@ -176,7 +207,12 @@ const handleCreateOrder = async () => {
     alert('Por favor, selecciona una dirección de entrega')
     return
   }
-  // TODO: Implementar la lógica para seleccionar el método de pago
+  
+  if (!selectedPaymentMethod.value) {
+    alert('Por favor, selecciona un método de pago')
+    return
+  }
+  
   // TODO: Implementar la lógica para seleccionar una nota para la orden
 
   const items = cartStore.items.map(item => ({
@@ -210,9 +246,8 @@ const handleCreateOrder = async () => {
       discount: discount,
       total: total
     },
-    // TODO: Implementar la lógica para seleccionar el método de pago
     payment: {
-      method: 'cash',
+      method: selectedPaymentMethod.value,
       status: 'pending',
       transactionId: `txn-${Date.now()}`
     },
@@ -223,11 +258,10 @@ const handleCreateOrder = async () => {
 
   try {
     const response = await orderApiService.createOrder(orderData)
-    console.log(response)
     
     // Abrir el link de WhatsApp en una nueva pestaña
-    if (response._whatsappLink) {
-      window.open(response._whatsappLink, '_blank')
+    if (response.whatsappLink) {
+      window.open(response.whatsappLink, '_blank')
     }
     
     alert('Orden creada correctamente')
