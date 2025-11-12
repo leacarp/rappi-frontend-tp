@@ -10,23 +10,32 @@
           <div v-else>
             <div class="mb-8 border-b border-gray-100 pb-4">
               <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">
-                {{ vendor?.profile?.vendorInfo?.restaurantName }}
+                {{ vendor?.restaurantName }}
               </h1>
               <p class="text-gray-600 text-center mb-3">
-                {{ vendor?.profile?.vendorInfo?.description || 'Sin descripción disponible' }}
+                {{ vendor?.description || 'Sin descripción disponible' }}
               </p>
 
-              <div class="flex justify-center space-x-4 text-sm text-gray-500">
-                <span v-if="vendor?.profile?.vendorInfo?.schedule">
-                  🕒 {{ vendor.profile.vendorInfo.schedule }}
+              <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-500 mb-3">
+                <span v-if="vendor?.schedule">
+                  🕒 {{ vendor.schedule }}
                 </span>
                 <span
-                  :class="vendor?.profile?.vendorInfo?.isAvailable ? 'text-green-600' : 'text-red-600'"
+                  :class="vendor?.isAvailable ? 'text-green-600' : 'text-red-600'"
                 >
-                  {{ vendor?.profile?.vendorInfo?.isAvailable ? '🟢 Disponible' : '🔴 No disponible' }}
+                  {{ vendor?.isAvailable ? '🟢 Disponible' : '🔴 No disponible' }}
                 </span>
-                <span v-if="vendor?.profile?.vendorInfo?.rating">
-                  ⭐ {{ vendor.profile.vendorInfo.rating.toFixed(1) }}
+                <span v-if="vendor?.rating">
+                  ⭐ {{ vendor.rating.toFixed(1) }}
+                </span>
+              </div>
+
+              <div v-if="vendor?.email || vendor?.phone" class="flex flex-wrap justify-center gap-4 text-xs text-gray-400 mt-2">
+                <span v-if="vendor?.email">
+                  📧 {{ vendor.email }}
+                </span>
+                <span v-if="vendor?.phone">
+                  📞 {{ vendor.phone }}
                 </span>
               </div>
             </div>
@@ -44,8 +53,9 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div
                     v-for="item in category.items"
-                    :key="item.name"
+                    :key="item.id"
                     class="border border-gray-200 rounded-xl p-4 hover:border-orange-400 hover:shadow-md transition-all bg-white"
+                    :class="{ 'opacity-60': !item.isAvailable }"
                   >
                     <div v-if="item.imageURL" class="mb-3">
                       <img
@@ -55,13 +65,21 @@
                       />
                     </div>
 
-                    <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ item.name }}</h3>
+                    <div class="flex items-start justify-between mb-1">
+                      <h3 class="text-lg font-semibold text-gray-800">{{ item.name }}</h3>
+                      <span
+                        v-if="!item.isAvailable"
+                        class="text-xs text-red-600 font-semibold ml-2"
+                      >
+                        No disponible
+                      </span>
+                    </div>
                     <p class="text-sm text-gray-500 mb-2 line-clamp-2">{{ item.description }}</p>
 
                     <div class="flex justify-between items-center mt-3">
                       <div>
                         <span
-                          v-if="item.promotions?.isOnPromotion"
+                          v-if="item.discountPercentage > 0"
                           class="text-orange-600 font-bold"
                         >
                           ${{ item.finalPrice.toFixed(2) }}
@@ -73,15 +91,22 @@
                           ${{ item.price.toFixed(2) }}
                         </span>
                         <span
-                          v-if="item.promotions?.isOnPromotion"
+                          v-if="item.discountPercentage > 0"
                           class="text-sm text-gray-400 line-through ml-2"
                         >
                           ${{ item.price.toFixed(2) }}
                         </span>
+                        <span
+                          v-if="item.discountPercentage > 0"
+                          class="text-xs text-orange-600 font-semibold ml-2"
+                        >
+                          -{{ item.discountPercentage }}%
+                        </span>
                       </div>
 
                       <button
-                        class="text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 px-3 py-1.5 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all"
+                        :disabled="!item.isAvailable"
+                        class="text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 px-3 py-1.5 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         @click="addToCart(item)"
                       >
                         Agregar al carrito
@@ -119,8 +144,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { vendorApi } from '../composables/vendorApiService.js';
 import { useCartStore } from '@/orders/stores/cart.js';
+import { userApi } from '@/users/composables/userApiService.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -135,27 +160,47 @@ const cartStore = useCartStore();
 const goBack = () => router.push({name: 'home'});
 
 const addToCart = (product) => {
-    cartStore.addItem({
-    id: `${vendorId}-${product.name}-${product.price}`,
+  if (!product.isAvailable) return;
+  
+  cartStore.addItem({
+    id: product.id,
     name: product.name,
-    price: product.promotions?.isOnPromotion
+    price: product.discountPercentage > 0
       ? product.finalPrice
       : product.price,
     quantity: 1
   })
+
+  alert('Producto agregado al carrito');
+}
+
+const groupMenuByCategory = (products) => {
+  const grouped = {};
+  
+  products.forEach(product => {
+    const category = product.category || 'Sin categoría';
+    if (!grouped[category]) {
+      grouped[category] = [];
+    }
+    grouped[category].push(product);
+  });
+  
+  return Object.keys(grouped).map(categoryName => ({
+    categoryName,
+    count: grouped[categoryName].length,
+    items: grouped[categoryName]
+  }));
 }
 
 onMounted(async () => {
     try {
       loading.value = true;
         const [vendorResp, menuResp] = await Promise.all([
-            vendorApi.getVendorProfile(vendorId),
-            vendorApi.getMenu(vendorId)
+            userApi.getVendorProfile(vendorId),
+            userApi.getVendorMenu(vendorId)
         ])
         vendor.value = vendorResp;
-        menu.value = menuResp.categories || [];
-        console.log('Vendor cargado:', vendor.value);
-        console.log('Categorias del menú:', menu.value);
+        menu.value = groupMenuByCategory(menuResp || []);
 
     } catch (error) {
         errorMessage.value = error.message;

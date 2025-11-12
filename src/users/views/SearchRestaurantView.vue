@@ -95,7 +95,6 @@
   
   <script setup>
   import { ref } from 'vue'
-  import { vendorApi } from '../composables/vendorApiService.js'
   import { useRouter } from 'vue-router'
   import { userApi } from '../composables/userApiService.js'
   
@@ -138,22 +137,9 @@
   }
 
   const selectRestaurant = (restaurant) => {
-    console.log('Restaurante seleccionado:', {
-      name: restaurant.restaurantName,
-      description: restaurant.description,
-      rating: restaurant.rating,
-      available: restaurant.isAvailable,
-      schedule: restaurant.schedule
-    })
-
-    const vendorId = restaurant._id || restaurant.id || restaurant.vendorId || restaurant.restaurantId
-    if (!vendorId) {
-      console.error('No se pudo obtener el ID del restaurante seleccionado.', restaurant)
-      return
-    }
     router.push({
       name: 'restaurant-menu',
-      params: { vendorId }
+      params: { vendorId: restaurant.restaurantId }
     })
   }
   
@@ -172,18 +158,12 @@
     try {
       const response = await userApi.searchRestaurants(lastSearchQuery.value)
       
-       // Normalizar resultados para asegurar vendorId
-    const results = (response.restaurants || []).map(r => ({
-      ...r,
-      vendorId: r._id || r.id || r.vendorId || r.restaurantId || (r.vendor && (r.vendor._id || r.vendor.id)) || null
-    }))
-
-    searchResults.value = results
-    totalResults.value = response.total || results.length
-    
-    if (results.length === 0) {
-      showNoResults.value = true
-    }
+      searchResults.value = response.restaurants
+      totalResults.value = response.total
+      
+      if (searchResults.value.length === 0) {
+        showNoResults.value = true
+      }
       
     } catch (error) {
       errorMessage.value = error.message || 'Error al buscar restaurantes. Por favor, intenta nuevamente.'
