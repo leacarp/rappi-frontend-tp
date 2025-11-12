@@ -2,20 +2,23 @@
 import { ref} from 'vue';
 import { useRouter } from 'vue-router';
 import { adminApi } from '../composables/adminApiService';
-import { useCreateDriverStore } from '../stores/createDriverStore';
 import { createDriverSchema } from '../schemas/createDriverSchema';
 
 const router = useRouter();
 const loading = ref(false);
 const errors = ref({});
-const store = useCreateDriverStore();
 const generalError = ref('');
 
 
 const form = ref({
-  get: () => store.form,
-  set: (value) => store.setForm(value)
+  email: '',
+  password: '',
+  name: '',
+  phone: '',
+  vehicle: ''
 })
+
+const successMessage = ref('')
 
 const validateField = async (fieldName) => {
   try {
@@ -47,8 +50,8 @@ const submitForm = async () => {
   loading.value = true;
   try {
     await adminApi.createDriver(form.value)
-    store.resetForm()
-    router.push('/users')
+    successMessage.value = 'Driver creado exitosamente'
+    setTimeout(() => router.push('/users'), 2000)
   } catch (error) {
     generalError.value = error.message;
   } finally {
@@ -62,6 +65,13 @@ const submitForm = async () => {
   <div class="container mx-auto p-6 max-w-2xl">
     <h1 class="text-3xl font-bold mb-6">Crear Driver</h1>
     
+    <div v-if="successMessage" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg flex items-center">
+      <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+      </svg>
+      {{ successMessage }}
+    </div>
+
     <div v-if="generalError" class="bg-red-50 border border-red-200 text-red-800 p-4 rounded mb-4">
       {{ generalError }}
     </div>
