@@ -15,7 +15,6 @@ export const adminApi = {
     },
 
     async createDriver(driverData){
-        console.log('Driver data: ', driverData);
         try{
             const response = await api.post(`${BASE_URL}/drivers/`, driverData)
             return response.data
