@@ -12,6 +12,7 @@ const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
 const OrderTrackingView = () => import('../orders/views/OrderTrackingView.vue')
 const RestaurantMenuView = () => import('../users/views/RestaurantMenuView.vue')
 const AdminCreateVendorView = () => import('../users/views/AdminCreateVendor.vue')
+const AdminCreateDriverView = () => import('../users/views/AdminCreateDriver.vue')
 const DriverReviewsView = () => import('../users/views/DriverReviewsView.vue')
 const VendorReviewsView = () => import('../users/views/VendorReviewsView.vue')
 
@@ -88,6 +89,12 @@ const router = createRouter({
       path: '/users/create-vendor',
       name: 'admin-create-vendor',
       component: AdminCreateVendorView,
+      meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/users/create-driver',
+      name: 'admin-create-driver',
+      component: AdminCreateDriverView,
       meta: { requiresAuth: true, requiresAdmin: true }
     },
     {

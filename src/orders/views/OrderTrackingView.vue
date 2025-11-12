@@ -15,10 +15,10 @@
         <div class="p-4 bg-white rounded-lg shadow flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-500">Nº de seguimiento</p>
-            <p class="text-lg font-semibold text-gray-900">{{ order._trackingNumber || 'N/A' }}</p>
+            <p class="text-lg font-semibold text-gray-900">{{ order._trackingNumber || order.trackingNumber || 'N/A' }}</p>
           </div>
-          <span :class="['px-4 py-2 rounded-full text-sm font-medium', getStatusColor(order._status)]">
-            {{ getStatusLabel(order._status) }}
+          <span :class="['px-4 py-2 rounded-full text-sm font-medium', getStatusColor(order._status || order.status)]">
+            {{ getStatusLabel(order._status || order.status) }}
           </span>
         </div>
 
@@ -41,16 +41,16 @@
         <div class="grid md:grid-cols-2 gap-4">
           <div class="p-4 bg-white rounded-lg shadow">
             <h2 class="font-semibold text-gray-900 mb-2">Vendedor</h2>
-            <p class="text-sm text-gray-700">{{ order._vendor?._name || 'N/A' }}</p>
+            <p class="text-sm text-gray-700">{{ (order._vendor || order.vendor)?._name || (order._vendor || order.vendor)?.name || 'N/A' }}</p>
           </div>
           <div class="p-4 bg-white rounded-lg shadow">
             <h2 class="font-semibold text-gray-900 mb-2">Entrega</h2>
-            <p class="text-sm text-gray-700">Cliente: {{ order._customer?._name || 'N/A' }}</p>
-            <p class="text-sm text-gray-700">Email: {{ order._customer?._email || 'N/A' }}</p>
-            <p v-if="order._deliveryLocation" class="text-sm">
+            <p class="text-sm text-gray-700">Cliente: {{ (order._customer || order.customer)?._name || (order._customer || order.customer)?.name || 'N/A' }}</p>
+            <p class="text-sm text-gray-700">Email: {{ (order._customer || order.customer)?._email || (order._customer || order.customer)?.email || 'N/A' }}</p>
+            <p v-if="order._deliveryLocation || order.deliveryLocation" class="text-sm">
               <a
                 class="text-blue-600 hover:underline"
-                :href="`https://www.google.com/maps?q=${order._deliveryLocation?._latitude},${order._deliveryLocation?._longitude}`"
+                :href="`https://www.google.com/maps?q=${(order._deliveryLocation || order.deliveryLocation)?._latitude || (order._deliveryLocation || order.deliveryLocation)?.latitude},${(order._deliveryLocation || order.deliveryLocation)?._longitude || (order._deliveryLocation || order.deliveryLocation)?.longitude}`"
                 target="_blank"
                 rel="noopener"
               >
@@ -87,7 +87,7 @@ const pollTimer = ref(null)
 const statusFlow = ['preparing', 'in_transit', 'delivered']
 
 const progressPercent = computed(() => {
-  const s = order.value?._status
+  const s = order.value?._status || order.value?.status
   const idx = statusFlow.indexOf(s)
   if (idx === -1) return 0
   return Math.round(((idx + 1) / statusFlow.length) * 100)
@@ -108,7 +108,8 @@ const fetchOrder = async () => {
     order.value = data
     lastUpdatedAt.value = Date.now()
 
-    if (order.value?._status === 'delivered' || order.value?._status === 'canceled') {
+    const status = order.value?._status || order.value?.status
+    if (status === 'delivered' || status === 'canceled') {
       stopPolling()
     }
   } catch (err) {

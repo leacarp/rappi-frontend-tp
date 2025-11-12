@@ -140,7 +140,7 @@
   const selectRestaurant = (restaurant) => {
     router.push({
       name: 'restaurant-menu',
-      params: { vendorId: restaurant.restaurantId }
+      params: { vendorId: restaurant.vendorId || restaurant.restaurantId || restaurant.id }
     })
   }
   
