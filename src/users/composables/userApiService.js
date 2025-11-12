@@ -109,5 +109,16 @@ export const userApi = {
       const errorMessage = error.response?.data?.message || 'Error al actualizar perfil del vendor'
       throw new Error(errorMessage)
     }
+  },
+
+  async getVendorMenu(vendorId){
+    try {
+      const response = await api.get(`products/vendor/${vendorId}`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener menu del vendor:', error.response?.data)
+      const errorMessage = error.response?.data?.message || 'Error al obtener menu del vendor'
+      throw new Error(errorMessage)
+    }
   }
 }

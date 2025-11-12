@@ -84,7 +84,6 @@ const error = ref('')
 const lastUpdatedAt = ref(null)
 const pollTimer = ref(null)
 
-// Estados en orden para barra de progreso
 const statusFlow = ['preparing', 'in_transit', 'delivered']
 
 const progressPercent = computed(() => {
@@ -109,7 +108,6 @@ const fetchOrder = async () => {
     order.value = data
     lastUpdatedAt.value = Date.now()
 
-    // Detener polling al finalizar
     if (order.value?._status === 'delivered' || order.value?._status === 'canceled') {
       stopPolling()
     }

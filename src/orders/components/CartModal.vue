@@ -44,6 +44,37 @@
             </div>
 
             <div class="bg-white px-6 py-4 max-h-[70vh] overflow-y-auto">
+              <div v-if="cartStore.vendorInfo" class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-4 mb-6 border border-orange-200">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-800 mb-1">
+                    {{ cartStore.vendorInfo.restaurantName }}
+                  </h3>
+                  <p class="text-xs text-gray-600 mb-2">
+                    {{ cartStore.vendorInfo.description || 'Sin descripción' }}
+                  </p>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3 text-xs">
+                      <span v-if="cartStore.vendorInfo.rating" class="text-orange-600 font-medium">
+                        ⭐ {{ cartStore.vendorInfo.rating.toFixed(1) }}
+                      </span>
+                      <span
+                        :class="cartStore.vendorInfo.isAvailable ? 'text-green-600' : 'text-red-600'"
+                        class="font-medium"
+                      >
+                        {{ cartStore.vendorInfo.isAvailable ? '🟢 Disponible' : '🔴 No disponible' }}
+                      </span>
+                    </div>
+                    <router-link
+                      :to="{ name: 'restaurant-menu', params: { vendorId: cartStore.vendorInfo.id } }"
+                      @click="close"
+                      class="text-xs px-3 py-1.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
+                    >
+                      Ver menú
+                    </router-link>
+                  </div>
+                </div>
+              </div>
+
               <div v-if="cartStore.isEmpty" class="text-center py-12 text-gray-500">
                 <p>Tu carrito está vacío</p>
                 <button
