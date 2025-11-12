@@ -44,6 +44,7 @@
                 <div
                   v-for="(restaurant, index) in searchResults"
                   :key="index"
+                  @click="selectRestaurant(restaurant)"
                   class="p-6 border border-gray-200 rounded-lg hover:border-orange-500 hover:shadow-md transition-all cursor-pointer bg-white"
                 >
                   <div class="flex justify-between items-start mb-2">
