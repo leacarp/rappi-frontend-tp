@@ -2,24 +2,36 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 const CART_KEY = 'cartItems'
-const VENDOR_ID_KEY = 'cartVendorId'
-
-const defaultItems = [
-  { id: "68ed6e19e604565c65964cc3", name: 'Hamburguesa Clásica', price: 15.99, quantity: 2 },
-  { id: "68dd42682da14ecf286ba5eb", name: 'Gaseosa', price: 4.50, quantity: 4 }
-]
-const defaultVendorId = "68c02572855e7473400f9483"
+const VENDOR_INFO_KEY = 'cartVendorInfo'
 
 export const useCartStore = defineStore('cart', () => {
-  const items = ref(JSON.parse(localStorage.getItem(CART_KEY)) || defaultItems)
-  const vendorId = ref(localStorage.getItem(VENDOR_ID_KEY) || defaultVendorId)
+  const items = ref(JSON.parse(localStorage.getItem(CART_KEY)) || [])
+  const vendorInfo = ref(JSON.parse(localStorage.getItem(VENDOR_INFO_KEY)) || null)
   const isModalOpen = ref(false)
 
   const totalItems = computed(() => items.value.reduce((sum, item) => sum + item.quantity, 0))
   const totalPrice = computed(() => items.value.reduce((sum, item) => sum + item.price * item.quantity, 0))
   const isEmpty = computed(() => items.value.length === 0)
 
-  function addItem(product) {
+  function addItem(product, productVendorInfo) {
+    // Si el carrito está vacío, asignar la información del vendor
+    if (items.value.length === 0) {
+      vendorInfo.value = productVendorInfo
+    } 
+    // Si el carrito tiene items, validar que sea del mismo vendedor
+    else if (vendorInfo.value?.id !== productVendorInfo?.id) {
+      const shouldClear = window.confirm(
+        'Ya tienes productos de otro restaurante en tu carrito. ¿Deseas eliminarlos y agregar este producto?'
+      )
+      
+      if (shouldClear) {
+        clear()
+        vendorInfo.value = productVendorInfo
+      } else {
+        return false
+      }
+    }
+
     const existing = items.value.find(item => item.id === product.id)
 
     if (existing) {
@@ -34,10 +46,17 @@ export const useCartStore = defineStore('cart', () => {
     }
   
     save()
+    return true
   }
 
   function removeItem(productId) {
     items.value = items.value.filter(item => item.id !== productId)
+    
+    // Si el carrito queda vacío, borrar la información del vendor
+    if (items.value.length === 0) {
+      vendorInfo.value = null
+    }
+    
     save()
   }
 
@@ -57,21 +76,21 @@ export const useCartStore = defineStore('cart', () => {
 
   function clear() {
     items.value = []
-    vendorId.value = null
+    vendorInfo.value = null
     save()
   }
 
-  function setVendorId(id) {
-    vendorId.value = id
-    localStorage.setItem(VENDOR_ID_KEY, id)
+  function setVendorInfo(info) {
+    vendorInfo.value = info
+    localStorage.setItem(VENDOR_INFO_KEY, JSON.stringify(info))
   }
 
   function save() {
     localStorage.setItem(CART_KEY, JSON.stringify(items.value))
-    if (vendorId.value) {
-      localStorage.setItem(VENDOR_ID_KEY, vendorId.value)
+    if (vendorInfo.value) {
+      localStorage.setItem(VENDOR_INFO_KEY, JSON.stringify(vendorInfo.value))
     } else {
-      localStorage.removeItem(VENDOR_ID_KEY)
+      localStorage.removeItem(VENDOR_INFO_KEY)
     }
   }
 
@@ -85,7 +104,7 @@ export const useCartStore = defineStore('cart', () => {
 
   return {
     items,
-    vendorId,
+    vendorInfo,
     totalItems,
     totalPrice,
     isEmpty,
@@ -94,7 +113,7 @@ export const useCartStore = defineStore('cart', () => {
     removeItem,
     updateQuantity,
     clear,
-    setVendorId,
+    setVendorInfo,
     openModal,
     closeModal
   }

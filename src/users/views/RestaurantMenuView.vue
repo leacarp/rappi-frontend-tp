@@ -162,16 +162,24 @@ const goBack = () => router.push({name: 'home'});
 const addToCart = (product) => {
   if (!product.isAvailable) return;
   
-  cartStore.addItem({
+  const success = cartStore.addItem({
     id: product.id,
     name: product.name,
     price: product.discountPercentage > 0
       ? product.finalPrice
       : product.price,
     quantity: 1
+  }, {
+    id: vendorId,
+    restaurantName: vendor.value.restaurantName,
+    description: vendor.value.description,
+    rating: vendor.value.rating,
+    isAvailable: vendor.value.isAvailable
   })
 
-  alert('Producto agregado al carrito');
+  if (success) {
+    alert('Producto agregado al carrito');
+  }
 }
 
 const groupMenuByCategory = (products) => {

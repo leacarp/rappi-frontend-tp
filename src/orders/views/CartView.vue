@@ -1,7 +1,37 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold mb-8">¡Tu carrito!</h1>
+      <h1 class="text-3xl font-bold mb-4">¡Tu carrito!</h1>
+
+      <div v-if="cartStore.vendorInfo" class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-4 mb-8 border border-orange-200">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <h2 class="text-xl font-semibold text-gray-800 mb-1">
+              {{ cartStore.vendorInfo.restaurantName }}
+            </h2>
+            <p class="text-sm text-gray-600 mb-2">
+              {{ cartStore.vendorInfo.description || 'Sin descripción' }}
+            </p>
+            <div class="flex items-center gap-3 text-sm">
+              <span v-if="cartStore.vendorInfo.rating" class="text-orange-600 font-medium">
+                ⭐ {{ cartStore.vendorInfo.rating.toFixed(1) }}
+              </span>
+              <span
+                :class="cartStore.vendorInfo.isAvailable ? 'text-green-600' : 'text-red-600'"
+                class="font-medium"
+              >
+                {{ cartStore.vendorInfo.isAvailable ? '🟢 Disponible' : '🔴 No disponible' }}
+              </span>
+            </div>
+          </div>
+          <router-link
+            :to="{ name: 'restaurant-menu', params: { vendorId: cartStore.vendorInfo.id } }"
+            class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium text-sm whitespace-nowrap ml-4"
+          >
+            Ver menú completo
+          </router-link>
+        </div>
+      </div>
 
       <div v-if="cartStore.isEmpty" class="bg-white rounded-lg shadow-sm p-12 text-center">
         <p class="text-gray-500 text-lg mb-4">Tu carrito está vacío</p>
@@ -245,7 +275,7 @@ const handleCreateOrder = async () => {
   
   const orderData = {
     customerId: authStore.userId,
-    vendorId: cartStore.vendorId,
+    vendorId: cartStore.vendorInfo?.id,
     pickupLocation: {
       latitude: -34.603722,
       longitude: -58.381592
