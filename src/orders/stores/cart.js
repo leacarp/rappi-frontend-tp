@@ -14,12 +14,9 @@ export const useCartStore = defineStore('cart', () => {
   const isEmpty = computed(() => items.value.length === 0)
 
   function addItem(product, productVendorInfo) {
-    // Si el carrito está vacío, asignar la información del vendor
     if (items.value.length === 0) {
       vendorInfo.value = productVendorInfo
-    } 
-    // Si el carrito tiene items, validar que sea del mismo vendedor
-    else if (vendorInfo.value?.id !== productVendorInfo?.id) {
+    } else if (vendorInfo.value?.id !== productVendorInfo?.id) {
       const shouldClear = window.confirm(
         'Ya tienes productos de otro restaurante en tu carrito. ¿Deseas eliminarlos y agregar este producto?'
       )
@@ -52,7 +49,6 @@ export const useCartStore = defineStore('cart', () => {
   function removeItem(productId) {
     items.value = items.value.filter(item => item.id !== productId)
     
-    // Si el carrito queda vacío, borrar la información del vendor
     if (items.value.length === 0) {
       vendorInfo.value = null
     }

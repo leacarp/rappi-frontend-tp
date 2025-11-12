@@ -266,7 +266,6 @@ const handleCreateOrder = async () => {
     quantity: item.quantity
   }))
 
-  // Calcular resumen de la orden
   const subtotal = cartStore.totalPrice
   const shippingCost = 0
   const taxes = 0
@@ -300,7 +299,6 @@ const handleCreateOrder = async () => {
   try {
     const response = await orderApiService.createOrder(orderData)
     
-    // Abrir el link de WhatsApp en una nueva pestaña
     if (response.whatsappLink) {
       window.open(response.whatsappLink, '_blank')
     }
