@@ -97,6 +97,7 @@
   import { ref } from 'vue'
   import { vendorApi } from '../composables/vendorApiService.js'
   import { useRouter } from 'vue-router'
+  import { userApi } from '../composables/userApiService.js'
   
   const router = useRouter()
   const searchQuery = ref('')
@@ -169,7 +170,7 @@
     lastSearchQuery.value = searchQuery.value.trim()
     
     try {
-      const response = await vendorApi.searchRestaurants(lastSearchQuery.value)
+      const response = await userApi.searchRestaurants(lastSearchQuery.value)
       
        // Normalizar resultados para asegurar vendorId
     const results = (response.restaurants || []).map(r => ({

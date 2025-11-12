@@ -79,9 +79,9 @@
                     >
                         <div class="flex items-start justify-between mb-4">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order._trackingNumber }}</h3>
-                                <p class="text-sm text-gray-700 mt-1">Total: ${{ Number(order._total).toFixed(2) }}</p>
-                                <p class="text-xs text-gray-500">Creado: {{ formatDate(order._createdAt) }}</p>
+                                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order.trackingNumber }}</h3>
+                                <p class="text-sm text-gray-700 mt-1">Total: ${{ Number(order.total).toFixed(2) }}</p>
+                                <p class="text-xs text-gray-500">Creado: {{ formatDate(order.createdAt) }}</p>
                             </div>
                             <span class="px-3 py-1 text-sm font-medium bg-purple-100 text-purple-800 rounded-full">
                                 Listo para Recolección
@@ -89,7 +89,7 @@
                         </div>
             
                         <button
-                            @click="viewOrderDetails(order._id)"
+                            @click="viewOrderDetails(order.id)"
                             class="w-full mb-3 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                         >
                             Ver detalles del pedido
@@ -97,13 +97,13 @@
             
                         <div class="flex space-x-3">
                             <button
-                                @click="acceptOrder(order._id)"
+                                @click="acceptOrder(order.id)"
                                 class="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
                             >
                                 Aceptar Pedido
                             </button>
                             <button
-                                @click="rejectOrder(order._id)"
+                                @click="rejectOrder(order.id)"
                                 class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
                             >
                                 Rechazar
@@ -124,9 +124,9 @@
                     >
                         <div class="flex items-start justify-between mb-4">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order._trackingNumber }}</h3>
-                                <p class="text-sm text-gray-700 mt-1">Total: ${{ Number(order._total).toFixed(2) }}</p>
-                                <p class="text-xs text-gray-500">Creado: {{ formatDate(order._createdAt) }}</p>
+                                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order.trackingNumber }}</h3>
+                                <p class="text-sm text-gray-700 mt-1">Total: ${{ Number(order.total).toFixed(2) }}</p>
+                                <p class="text-xs text-gray-500">Creado: {{ formatDate(order.createdAt) }}</p>
                             </div>
                             <span class="px-3 py-1 text-sm font-medium bg-indigo-100 text-indigo-800 rounded-full">
                                 En Tránsito
@@ -134,7 +134,7 @@
                         </div>
             
                         <button
-                            @click="viewOrderDetails(order._id)"
+                            @click="viewOrderDetails(order.id)"
                             class="w-full mb-3 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                         >
                             Ver detalles del pedido
@@ -142,7 +142,7 @@
             
                         <div class="space-y-2">
                             <button
-                                @click="setOrderAsDelivered(order._id)"
+                                @click="setOrderAsDelivered(order.id)"
                                 class="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
                             >
                                 Marcar como Entregado
@@ -163,9 +163,9 @@
                     >
                         <div class="flex items-start justify-between mb-4">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order._trackingNumber }}</h3>
-                                <p class="text-sm text-gray-700 mt-1">Total: ${{ Number(order._total).toFixed(2) }}</p>
-                                    <p class="text-xs text-gray-500">Creado: {{ formatDate(order._createdAt) }}</p>
+                                <h3 class="text-lg font-semibold text-gray-900">Pedido #{{ order.trackingNumber }}</h3>
+                                <p class="text-sm text-gray-700 mt-1">Total: ${{ Number(order.total).toFixed(2) }}</p>
+                                    <p class="text-xs text-gray-500">Creado: {{ formatDate(order.createdAt) }}</p>
                             </div>
                             <span class="px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">
                                 Entregado
@@ -173,7 +173,7 @@
                         </div>
             
                         <button
-                            @click="viewOrderDetails(order._id)"
+                            @click="viewOrderDetails(order.id)"
                             class="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                         >
                             Ver detalles
@@ -191,7 +191,7 @@
             <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
                     <h2 class="text-xl font-bold text-gray-900">
-                        Detalles del Pedido #{{ selectedOrder._trackingNumber }}
+                        Detalles del Pedido #{{ selectedOrder.trackingNumber }}
                         <span v-if="loading" class="ml-2 text-sm text-gray-500">(Cargando...)</span>
                     </h2>
                     <button
@@ -209,7 +209,7 @@
 
                     <div>
                         <h3 class="text-sm font-semibold text-gray-900 mb-2">Restaurante</h3>
-                        <p class="text-gray-700">{{ selectedOrder._vendor._name }}</p>
+                        <p class="text-gray-700">{{ selectedOrder.vendor.name }}</p>
                     </div>
 
                     <div>
@@ -217,15 +217,15 @@
                         <div class="grid grid-cols-2 gap-4 text-sm">
                             <div>
                                 <span class="text-gray-600">Número de seguimiento:</span>
-                                <p class="font-medium text-gray-900">{{ selectedOrder._trackingNumber || 'N/A' }}</p>
+                                <p class="font-medium text-gray-900">{{ selectedOrder.trackingNumber || 'N/A' }}</p>
                             </div>
                             <div>
                                 <span class="text-gray-600">Fecha de creación:</span>
-                                <p class="font-medium text-gray-900">{{ formatDate(selectedOrder._createdAt) }}</p>
+                                <p class="font-medium text-gray-900">{{ formatDate(selectedOrder.createdAt) }}</p>
                             </div>
                             <div>
                                 <span class="text-gray-600">Estado:</span>
-                                <p class="font-medium text-gray-900">{{ getStatusLabel(selectedOrder._status) }}</p>
+                                <p class="font-medium text-gray-900">{{ getStatusLabel(selectedOrder.status) }}</p>
                             </div>
                         </div>
                     </div>
@@ -238,7 +238,7 @@
                             </h3>
                             <a
                                 class="font-medium text-green-600 hover:underline"
-                                :href="`https://www.google.com/maps?q=${selectedOrder._pickupLocation?._latitude},${selectedOrder._pickupLocation?._longitude}`"
+                                :href="`https://www.google.com/maps?q=${selectedOrder.pickupLocation?.latitude},${selectedOrder.pickupLocation?.longitude}`"
                                 target="_blank"
                                 rel="noopener"
                             >
@@ -253,14 +253,14 @@
                             </h3>
                             <a
                                 class="font-medium text-blue-600 hover:underline"
-                                :href="`https://www.google.com/maps?q=${selectedOrder._deliveryLocation?._latitude},${selectedOrder._deliveryLocation?._longitude}`"
+                                :href="`https://www.google.com/maps?q=${selectedOrder.deliveryLocation?.latitude},${selectedOrder.deliveryLocation?.longitude}`"
                                 target="_blank"
                                 rel="noopener"
                             >
                                 Ver en Google Maps
                             </a>
-                            <p class="text-sm text-gray-500 mt-1">Cliente: {{ selectedOrder._customer._name }}</p>
-                            <p class="text-sm text-gray-500">Email: {{ selectedOrder._customer._email }}</p>
+                            <p class="text-sm text-gray-500 mt-1">Cliente: {{ selectedOrder.customer.name }}</p>
+                            <p class="text-sm text-gray-500">Email: {{ selectedOrder.customer.email }}</p>
                         </div>
                     </div>
         
@@ -268,23 +268,23 @@
                         <h3 class="text-sm font-semibold text-gray-900 mb-3">Contenido del Pedido</h3>
                         <div class="bg-gray-50 rounded-lg p-4 space-y-3">
                             <div
-                                v-for="item in selectedOrder._items"
-                                :key="item._productOfItem._id"
+                                v-for="item in selectedOrder.items"
+                                :key="item.productOfItem.id"
                                 class="flex items-start justify-between"
                             >
                                 <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">{{ item._productOfItem._name }}</p>
+                                    <p class="text-sm font-medium text-gray-900">{{ item.productOfItem.name }}</p>
                                     <p v-if="item.notes" class="text-xs text-gray-500 mt-1">Nota: {{ item.notes }}</p>
                                 </div>
                                 <div class="text-right ml-4">
-                                    <p class="text-sm font-medium text-gray-900">x{{ item._quantity }}</p>
-                                    <p class="text-sm text-gray-600">${{ item._productOfItem._price.toFixed(2) }}</p>
+                                    <p class="text-sm font-medium text-gray-900">x{{ item.quantity }}</p>
+                                    <p class="text-sm text-gray-600">${{ item.productOfItem.price.toFixed(2) }}</p>
                                 </div>
                             </div>
                             <div class="border-t border-gray-200 pt-3 mt-3">
                                 <div class="flex items-center justify-between font-semibold">
                                     <span class="text-gray-900">Total</span>
-                                    <span class="text-gray-900">${{ selectedOrder._summary._total.toFixed(2) }}</span>
+                                    <span class="text-gray-900">${{ selectedOrder.summary.total.toFixed(2) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -297,31 +297,31 @@
                                 <span
                                     :class="[
                                         'px-3 py-1 text-sm font-medium rounded-full',
-                                        selectedOrder._payment._method === 'card' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                                        selectedOrder.payment.method === 'card' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
                                     ]"
                                 >
-                                    {{ selectedOrder._payment._method === 'card' ? 'Tarjeta' : 'Efectivo' }}
+                                    {{ selectedOrder.payment.method === 'card' ? 'Tarjeta' : 'Efectivo' }}
                                 </span>
                                 <span
                                     :class="[
                                         'px-3 py-1 text-sm font-medium rounded-full',
-                                        selectedOrder._payment._status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                        selectedOrder.payment.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                                     ]"
                                 >
-                                    {{ selectedOrder._payment._status === 'paid' ? 'Pagado' : 'Pendiente' }}
+                                    {{ selectedOrder.payment.status === 'paid' ? 'Pagado' : 'Pendiente' }}
                                 </span>
                             </div>
-                            <div v-if="selectedOrder._payment._method === 'card' && selectedOrder._payment._transactionId" class="text-sm">
+                            <div v-if="selectedOrder.payment.method === 'card' && selectedOrder.payment.transactionId" class="text-sm">
                                 <span class="text-gray-600">ID de transacción:</span>
-                                <p class="font-mono text-gray-900">{{ selectedOrder._payment._transactionId }}</p>
+                                <p class="font-mono text-gray-900">{{ selectedOrder.payment.transactionId }}</p>
                             </div>
                         </div>
                     </div>
         
-                    <div v-if="selectedOrder._notes">
+                    <div v-if="selectedOrder.notes">
                         <h3 class="text-sm font-semibold text-gray-900 mb-2">Notas de Entrega</h3>
                         <p class="text-sm text-gray-700 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                            {{ selectedOrder._notes }}
+                            {{ selectedOrder.notes }}
                         </p>
                     </div>
                 </div>
@@ -381,33 +381,47 @@ const getDriverAvailability = async () => {
 const getOrdersByStatus = async (status) => {
     try {
         const orders = await orderApiService.getOrdersByStatus(status)
-        return orders._orders
+        return orders?.orders || []
     } catch (err) {
         console.error('Error al obtener las órdenes:', err)
-        throw err
+        return []
     }
 }
 
 const getOrdersByStatusToCurrentUser = async (status) => {
-    const userId = authStore.userId
-    const orders = await orderApiService.getOrdersByUser(userId, 'driver', status)
-    return orders._orders
+    try {
+        const userId = authStore.userId
+        const orders = await orderApiService.getOrdersByUser(userId, 'driver', status)
+        return orders?.orders || []
+    } catch (err) {
+        console.error('Error al obtener las órdenes del usuario:', err)
+        return []
+    }
 }
 
 const getReadyForPickupOrders = async () => {
     const orders = await getOrdersByStatus('ready_for_pickup')
-    const sorted = orders.sort((a, b) => new Date(a._createdAt) - new Date(b._createdAt))
+    if (!Array.isArray(orders) || orders.length === 0) {
+        return []
+    }
+    const sorted = orders.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
     return rejectedStore.removeRejecteds(sorted)
 }
 
 const getInTransitOrders = async () => {
     const orders = await getOrdersByStatusToCurrentUser('in_transit')
-    return orders.sort((a, b) => new Date(a._createdAt) - new Date(b._createdAt))
+    if (!Array.isArray(orders) || orders.length === 0) {
+        return []
+    }
+    return orders.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
 }
 
 const getDeliveredOrders = async () => {
     const orders = await getOrdersByStatusToCurrentUser('delivered')
-    return orders.sort((a, b) => new Date(b._createdAt) - new Date(a._createdAt))
+    if (!Array.isArray(orders) || orders.length === 0) {
+        return []
+    }
+    return orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 }
 
 const loadOrderSection = async () => {
@@ -480,15 +494,21 @@ const toggleAvailability = async () => {
 }
 
 const acceptOrder = async (orderId) => {
-    // TODO: Pendiente el backend
-    console.log('acceptOrder clicked for', orderId)
+    try {
+        await orderApiService.acceptOrderByDriver(orderId, authStore.userId)
+        await loadOrderSection()
+        alert('El pedido fue aceptado exitosamente.')
+    } catch (err) {
+        console.error('Error al aceptar el pedido:', err)
+        error.value = err.message
+    }
 }
 
 const rejectOrder = (orderId) => {
     if (!orderId) return
     rejectedStore.add(orderId)
     
-    readyForPickupOrders.value = readyForPickupOrders.value.filter(o => o._id !== orderId)
+    readyForPickupOrders.value = readyForPickupOrders.value.filter(o => o.id !== orderId)
 }
 
 onMounted(async () => {
