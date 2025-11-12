@@ -44,6 +44,7 @@
                 <div
                   v-for="(restaurant, index) in searchResults"
                   :key="index"
+                  @click="selectRestaurant(restaurant)"
                   class="p-6 border border-gray-200 rounded-lg hover:border-orange-500 hover:shadow-md transition-all cursor-pointer bg-white"
                 >
                   <div class="flex justify-between items-start mb-2">
@@ -95,8 +96,10 @@
   
   <script setup>
   import { ref } from 'vue'
-  import { vendorApi } from '../composables/vendorApiService.js'
+  import { useRouter } from 'vue-router'
+  import { userApi } from '../composables/userApiService.js'
   
+  const router = useRouter()
   const searchQuery = ref('')
   const isSearching = ref(false)
   const searchResults = ref([])
@@ -135,16 +138,10 @@
   }
 
   const selectRestaurant = (restaurant) => {
-    console.log('Restaurante seleccionado:', {
-      name: restaurant.restaurantName,
-      description: restaurant.description,
-      rating: restaurant.rating,
-      available: restaurant.isAvailable,
-      schedule: restaurant.schedule
+    router.push({
+      name: 'restaurant-menu',
+      params: { vendorId: restaurant.restaurantId }
     })
-    
-    // Aquí puedes agregar la lógica para navegar a la vista del restaurante
-    // Por ejemplo: router.push({ name: 'restaurant-detail', params: { id: restaurantId } })
   }
   
   const handleSearch = async () => {
@@ -160,12 +157,12 @@
     lastSearchQuery.value = searchQuery.value.trim()
     
     try {
-      const response = await vendorApi.searchRestaurants(lastSearchQuery.value)
+      const response = await userApi.searchRestaurants(lastSearchQuery.value)
       
       searchResults.value = response.restaurants
       totalResults.value = response.total
       
-      if (response.restaurants.length === 0) {
+      if (searchResults.value.length === 0) {
         showNoResults.value = true
       }
       

@@ -2,8 +2,22 @@
   <div class="min-h-screen bg-gray-50">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Mis Calificaciones y Comentarios</h2>
-        <p class="text-gray-600">Revisa el feedback de tus clientes</p>
+        <div class="flex items-center gap-4 mb-4">
+          <button 
+            @click="goBack"
+            class="text-orange-500 hover:text-orange-600 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">
+              Calificaciones del Restaurante
+            </h2>
+            <p class="text-gray-600">Opiniones de clientes sobre este lugar</p>
+          </div>
+        </div>
       </div>
 
       <ReviewsDisplay 
@@ -20,11 +34,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useAuthStore } from '../../common/stores/auth.js'
+import { useRoute, useRouter } from 'vue-router'
 import { userApi } from '../composables/userApiService.js'
 import ReviewsDisplay from '../components/ReviewsDisplay.vue'
 
-const authStore = useAuthStore()
+const route = useRoute()
+const router = useRouter()
+const vendorId = route.params.vendorId
+
 const loading = ref(false)
 const error = ref('')
 const reviews = ref([])
@@ -32,13 +49,8 @@ const averageScore = ref(0)
 const totalReviews = ref(0)
 
 const loadReviews = async () => {
-  if (!authStore.userId) {
-    error.value = 'No se encontró ID de usuario'
-    return
-  }
-
-  if (!authStore.isDriver) {
-    error.value = 'Solo los drivers pueden acceder a esta página'
+  if (!vendorId) {
+    error.value = 'No se encontró ID del restaurante'
     return
   }
 
@@ -46,7 +58,7 @@ const loadReviews = async () => {
   error.value = ''
 
   try {
-    const response = await userApi.getReviews(authStore.userId)
+    const response = await userApi.getReviews(vendorId)
     
     reviews.value = response.items || []
     averageScore.value = response.averageScore || 0
@@ -57,6 +69,10 @@ const loadReviews = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const goBack = () => {
+  router.back()
 }
 
 onMounted(async () => {

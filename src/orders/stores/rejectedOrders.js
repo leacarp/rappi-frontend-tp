@@ -27,14 +27,16 @@ export const useRejectedOrdersStore = defineStore('rejectedOrders', () => {
     }
 
     function removeRejecteds (orders) {
-        // Solo mantiene rechazos presentes en orderIds
-        const orderIds = orders.map(o => o._id)
+        if (!Array.isArray(orders)) {
+            return []
+        }
+        
+        const orderIds = orders.map(o => o.id)
         setIds(rejectedOrderIds.value.filter((id) => orderIds.includes(id)))
         
         save()
         
-        // Retorna un array de orderIds excluyendo aquellos que están en rejectedOrderIds
-        return orders.filter(o => !rejectedOrderIds.value.includes(o._id))
+        return orders.filter(o => !rejectedOrderIds.value.includes(o.id))
     }
 
   return {

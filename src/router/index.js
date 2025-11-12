@@ -12,7 +12,10 @@ const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
 const OrderTrackingView = () => import('../orders/views/OrderTrackingView.vue')
 const AdminCreateVendorView = () => import('../users/views/AdminCreateVendorView.vue')
 const AdminCreateDriverView = () => import('../users/views/AdminCreateDriverView.vue')
+const RestaurantMenuView = () => import('../users/views/RestaurantMenuView.vue')
+const AdminCreateVendorView = () => import('../users/views/AdminCreateVendor.vue')
 const DriverReviewsView = () => import('../users/views/DriverReviewsView.vue')
+const VendorReviewsView = () => import('../users/views/VendorReviewsView.vue')
 
 
 const router = createRouter({
@@ -70,6 +73,18 @@ const router = createRouter({
       path: '/order-tracking/:orderId',
       name: 'order-tracking',
       component: OrderTrackingView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/restaurant/:vendorId/menu',
+      name: 'restaurant-menu',
+      component: RestaurantMenuView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/restaurant/:vendorId/reviews',
+      name: 'vendor-reviews',
+      component: VendorReviewsView,
       meta: { requiresAuth: true }
     },
     {
