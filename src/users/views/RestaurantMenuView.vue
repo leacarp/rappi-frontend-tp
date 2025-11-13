@@ -117,6 +117,7 @@
                       </div>
 
                       <button
+                        v-if="authStore.isCustomer || authStore.isAdmin"
                         :disabled="!item.isAvailable"
                         class="text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 px-3 py-1.5 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         @click="addToCart(item)"
@@ -158,7 +159,9 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useCartStore } from '@/orders/stores/cart.js';
 import { userApi } from '@/users/composables/userApiService.js';
+import { useAuthStore } from '@/common/stores/auth.js';
 
+const authStore = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 const vendorId = route.params.vendorId;
