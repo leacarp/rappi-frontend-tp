@@ -23,17 +23,5 @@ export const adminApi = {
             console.error('Error al crear vendor', errorMessage)
             throw new Error(errorMessage)
         }
-    },
-
-    async createDriver(driverData){
-        try {
-            const response = await api.post(`${BASE_URL}/drivers/`, driverData)
-            return response.data
-        } catch (error) {
-            const errorMessage = error.response?.data?.message || error.message || 'Error al crear driver'
-            console.error('Error al crear driver', errorMessage)
-            throw new Error(errorMessage)
-        }
-    },
-
+    }
 }
