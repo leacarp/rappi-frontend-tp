@@ -56,6 +56,14 @@
               </router-link>
 
               <router-link
+                v-if="authStore.isAdmin"
+                :to="{ name: 'admin-create-driver' }"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+              >
+                Crear Driver
+              </router-link>
+
+              <router-link
                 v-if="authStore.isVendor"
                 :to="{ name: 'products-management' }"
                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"

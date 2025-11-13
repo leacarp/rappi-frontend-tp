@@ -10,10 +10,12 @@ const OrdersManagementView = () => import('../orders/views/OrdersManagementView.
 const DeliveryManagementView = () => import('../orders/views/DeliveryManagementView.vue')
 const VendorProfileView = () => import('../users/views/VendorProfileView.vue')
 const OrderTrackingView = () => import('../orders/views/OrderTrackingView.vue')
+const AdminCreateVendorView = () => import('../users/views/AdminCreateVendorView.vue')
+const AdminCreateDriverView = () => import('../users/views/AdminCreateDriverView.vue')
 const RestaurantMenuView = () => import('../users/views/RestaurantMenuView.vue')
-const AdminCreateVendorView = () => import('../users/views/AdminCreateVendor.vue')
 const DriverReviewsView = () => import('../users/views/DriverReviewsView.vue')
 const VendorReviewsView = () => import('../users/views/VendorReviewsView.vue')
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,6 +91,12 @@ const router = createRouter({
       name: 'admin-create-vendor',
       component: AdminCreateVendorView,
       meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/users/create-driver',
+      name: 'admin-create-driver',
+      component: AdminCreateDriverView,
+      meta: {requiresAuth: true, requiresAdmin: true}
     },
     {
       path: '/driver-reviews',
