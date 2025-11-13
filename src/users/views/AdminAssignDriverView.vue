@@ -53,7 +53,7 @@ const fetchDrivers = async () => {
     const data = await ordersApi.getAllDrivers()
     drivers.value = data;
     } catch (error) {
-    errorModal.value = error.message;
+    modalError.value = error.message;
     }
 }
 
@@ -95,7 +95,7 @@ const assignDriver = async (driverId) => {
       assigning.value = false
     }, 2000)
     } catch (error) {
-    errorModal.value = error.message;
+    modalError.value = error.message;
     }
     finally{
       loading.value = false;
