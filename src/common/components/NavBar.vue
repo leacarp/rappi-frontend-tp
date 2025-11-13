@@ -63,6 +63,14 @@
               >
                 Crear Driver
               </router-link>
+              
+              <router-link
+                v-if="authStore.isAdmin"
+                :to="{ name: 'admin-assign-driver' }"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+              >
+                Asignar Driver a Orden
+              </router-link>
 
               <router-link
                 v-if="authStore.isVendor"
