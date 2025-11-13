@@ -24,5 +24,4 @@ export const adminApi = {
             throw new Error(errorMessage)
         }
     }
-
 }

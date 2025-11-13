@@ -96,7 +96,7 @@ const router = createRouter({
       path: '/users/create-driver',
       name: 'admin-create-driver',
       component: AdminCreateDriverView,
-      meta: {requiresAuth: true, requiresAdmin: true}
+      meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
       path: '/driver-reviews',

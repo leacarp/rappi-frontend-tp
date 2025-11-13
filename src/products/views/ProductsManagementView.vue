@@ -400,22 +400,22 @@ const loadProducts = async () => {
     const data = await productApiService.getProductsByVendor(vendorId.value)
     
     products.value = data.map(product => {
-      const promotions = product._promotions || {}
-      const isOnPromotion = promotions._isOnPromotion ?? false
-      const discountedPrice = promotions._discountedPrice ?? 0
+      const promotions = product.promotions || product._promotions || {}
+      const isOnPromotion = promotions.isOnPromotion ?? promotions._isOnPromotion ?? false
+      const discountedPrice = promotions.discountedPrice ?? promotions._discountedPrice ?? 0
 
       return {
-        id: product._id || '',
-        vendorId: product._vendorId || '',
-        name: product._name || 'Sin nombre',
-        description: product._description || 'Sin descripción',
-        price: product._price ?? 0,
+        id: product.id || product._id || '',
+        vendorId: product.vendorId || product._vendorId || '',
+        name: product.name || product._name || 'Sin nombre',
+        description: product.description || product._description || 'Sin descripción',
+        price: product.price ?? product._price ?? 0,
         specialPrice: isOnPromotion ? discountedPrice : null,
-        category: product._category || 'Sin categoría',
-        image: product._imageURL || 'https://placehold.co/300?text=Sin+Foto',
-        active: product._isAvailable ?? true,
-        finalPrice: product._finalPrice ?? product._price ?? 0,
-        discountPercentage: product._discountPercentage ?? 0
+        category: product.category || product._category || 'Sin categoría',
+        image: product.imageURL || product._imageURL || 'https://placehold.co/300?text=Sin+Foto',
+        active: product.isAvailable ?? product._isAvailable ?? true,
+        finalPrice: product.finalPrice ?? product._finalPrice ?? product.price ?? product._price ?? 0,
+        discountPercentage: product.discountPercentage ?? product._discountPercentage ?? 0
       }
     })
   } catch (err) {

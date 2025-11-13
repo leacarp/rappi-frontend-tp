@@ -15,6 +15,7 @@
           </router-link>
           <button
             @click="cartStore.openModal"
+            v-if="authStore.isCustomer || authStore.isAdmin"
             class="text-gray-700 hover:text-orange-500 font-medium transition-colors flex items-center space-x-1"
           >
             <span>Mi Carrito</span>
