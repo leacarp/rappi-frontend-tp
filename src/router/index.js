@@ -15,6 +15,7 @@ const AdminCreateDriverView = () => import('../users/views/AdminCreateDriverView
 const RestaurantMenuView = () => import('../users/views/RestaurantMenuView.vue')
 const DriverReviewsView = () => import('../users/views/DriverReviewsView.vue')
 const VendorReviewsView = () => import('../users/views/VendorReviewsView.vue')
+const AdminAssignDriverView = () => import('../users/views/AdminAssignDriverView.vue')
 
 
 const router = createRouter({
@@ -103,6 +104,12 @@ const router = createRouter({
       name: 'driver-reviews',
       component: DriverReviewsView,
       meta: { requiresAuth: true, requiresDriver: true }
+    },
+    {
+      path: '/users/assign-driver',
+      name: 'admin-assign-driver',
+      component: AdminAssignDriverView,
+      meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
       path: '/:pathMatch(.*)*',
